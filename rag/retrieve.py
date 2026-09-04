@@ -1,6 +1,6 @@
 import numpy as np
 
-from embeddings import create_embedding
+from .embeddings import create_embedding
 
 
 def retrieve(query, vector_store, documents, top_k=3):
