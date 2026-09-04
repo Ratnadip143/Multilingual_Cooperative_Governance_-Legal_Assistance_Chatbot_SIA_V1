@@ -1,556 +1,719 @@
-# SIH26187 – AI-Based Intelligent Border Surveillance
+# SIH26088 – SIA: Smart Indian Assistant
 
-## AI-Based Intelligent Video Analytics Platform for Border Surveillance using Existing CCTV Infrastructure
+## Multilingual Cooperative Governance & Legal Assistance Chatbot
 
-![Project Status](https://img.shields.io/badge/Status-In%20Development-orange)
-![Smart India Hackathon](https://img.shields.io/badge/SIH-2026-blue)
-![Category](https://img.shields.io/badge/Category-Software-green)
-![Theme](https://img.shields.io/badge/Theme-Blockchain%20%26%20Cybersecurity-purple)
+SIA (Smart Indian Assistant) is an AI-powered, multilingual, voice-first chatbot designed to help cooperative members, farmers, and rural stakeholders understand cooperative governance, legal provisions, government schemes, PACS services, crop insurance, financial literacy, and grievance procedures in their preferred language.
 
----
+The system uses Retrieval-Augmented Generation (RAG) to provide reliable, source-grounded answers using information collected from official government sources.
+
+Your Voice. Your Language. Your Rights.
+
 
 ## 📌 Problem Statement
 
-**Problem Statement ID:** SIH26187
+Problem Statement ID: SIH26088
 
-**Title:** AI-Based Intelligent Video Analytics Platform for Border Surveillance using Existing CCTV Infrastructure
+Title: Multilingual Cooperative Governance & Legal Assistance Chatbot
 
-**Organization:** Ministry of Home Affairs
+Organization: Ministry of Cooperation
 
-**Department:** Sashastra Seema Bal (SSB), Police II Division
+Category: Hardware
 
-**Category:** Software
+Theme: Agriculture, FoodTech & Rural Development
 
-**Theme:** Blockchain & Cybersecurity
+### Problem
 
----
+Cooperative members, farmers, and rural stakeholders often face difficulties accessing reliable information about cooperative laws, government schemes, PACS services, crop insurance, financial literacy, and grievance redressal.
 
-## 📖 Project Overview
+Information is distributed across different government portals and may be difficult to understand due to language barriers, complex legal terminology, and limited digital accessibility.
 
-Border security forces deploy CCTV cameras at Border Out Posts (BOPs), border roads, and other strategic locations for surveillance and monitoring.
+### Our Solution
 
-However, conventional CCTV systems mainly provide video recording and live monitoring, which requires continuous human observation. Advanced surveillance capabilities such as human tracking, vehicle identification, intrusion detection, suspicious activity detection, and automated number plate recognition generally require specialized and expensive surveillance solutions.
+We propose SIA – Smart Indian Assistant, a multilingual AI-powered chatbot that allows users to ask questions through voice or text and receive simple, understandable, and source-grounded answers in their preferred language.
 
-Our project proposes an **AI-powered video analytics platform** that transforms existing CCTV infrastructure into an intelligent surveillance system.
-
-The platform uses **Artificial Intelligence, Machine Learning, Computer Vision, and Video Analytics** to analyze CCTV video streams and generate actionable information in real time.
-
-The prototype is designed to operate over a **local network**, allowing video processing, event logging, alerts, and storage without mandatory dependence on cloud services.
-
----
 
 ## 🎯 Objectives
 
-- Enhance existing CCTV infrastructure with AI-based intelligence.
-- Detect and track humans and vehicles automatically.
-- Detect unauthorized entry into restricted areas.
-- Identify suspicious activities and movements.
-- Generate real-time security alerts.
-- Support Automatic Number Plate Recognition (ANPR).
-- Provide night-time movement detection.
-- Maintain local surveillance event records.
-- Provide a centralized monitoring dashboard.
-- Reduce dependence on expensive dedicated surveillance hardware.
-- Improve situational awareness and response time.
-- Build a cost-effective and scalable prototype.
+- Provide multilingual access to cooperative and government information.
+- Make complex legal and governance information easier to understand.
+- Provide voice-based assistance for users with limited digital literacy.
+- Answer questions using verified government documents and webpages.
+- Help users understand cooperative schemes and PACS services.
+- Provide information related to crop insurance such as PMFBY.
+- Provide financial-literacy assistance.
+- Guide users regarding cooperative grievance procedures.
+- Display relevant sources used for generating answers.
+- Provide a low-cost hardware-based access point using Raspberry Pi.
 
----
 
-# 🚀 Key Features
+## ✨ Key Features
 
-### 1. Human Detection & Tracking
-Detect and track people appearing in the CCTV video stream.
+### 🌐 Multilingual Chatbot
 
-### 2. Vehicle Detection & Classification
-Detect vehicles and classify them into categories such as car, motorcycle, truck, etc.
+Users can communicate with SIA in their preferred supported Indian language through text or voice.
 
-### 3. Face Detection
-Detect faces appearing in the surveillance footage for monitoring purposes.
+### 🎙️ Voice-Based Assistance
 
-### 4. Automatic Number Plate Recognition (ANPR)
-Detect vehicle number plates and extract readable plate information where image quality permits.
+Users can speak their questions using a microphone and receive responses through both the touchscreen and speaker.
 
-### 5. Virtual Fence / Restricted Zone Detection
-Define restricted areas on the camera view and generate an alert when a detected person or vehicle enters the zone.
+### 📚 RAG-Based Knowledge System
 
-### 6. Suspicious Activity Detection
-Identify predefined suspicious movement patterns or activities and flag them for human verification.
+SIA uses Retrieval-Augmented Generation(RAG) to retrieve relevant information from verified government documents before generating an answer.
 
-### 7. Night-Time Movement Detection
-Detect movement during low-light/night-time conditions using available camera footage.
+### ⚖️ Cooperative Governance & Legal Guidance
 
-### 8. Real-Time Alerts
-Generate alerts when important events such as restricted-zone intrusion or suspicious movement are detected.
+The chatbot can provide simplified guidance regarding cooperative governance, laws, rules, by-laws, guidelines, and related information available in the knowledge base.
 
-### 9. Event Logging
-Store important event information such as event type, timestamp, camera ID, and detection details.
+### 🏛️ Government Scheme Assistance
 
-### 10. Risk / Threat Assessment
-Assign a simple risk level to detected events to help prioritize alerts.
+SIA provides information about relevant government schemes and services related to cooperation, agriculture, crop insurance, financial literacy, and rural development.
 
-### 11. CCTV Video Integration
-Support video input from existing CCTV/IP-camera streams and recorded footage for demonstration.
+### 🔎 Source-Grounded Answers
 
-### 12. Monitoring Dashboard
-Provide a centralized dashboard for viewing camera feeds, alerts, events, and detection information.
+Answers can show the relevant government source or document so that users can verify important information.
 
----
+### 🗣️ Simple Language
 
-# 🏗️ System Architecture
+Complex government and legal information is converted into easy-to-understand conversational responses.
+
+### 🖥️ Raspberry Pi Kiosk
+
+A touchscreen-based Raspberry Pi prototype provides a simple physical interface for rural and cooperative users.
+
+
+
+# 🧠 System Architecture
+
+```text
+                ┌─────────────────────┐
+                │        USER         │
+                │   Voice / Text      │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Language Detection  │
+                │     + STT           │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │  Query Processing   │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │    FAISS Vector     │
+                │     Database        │
+                │    RAG Retrieval    │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │        LLM          │
+                │ Grounded Response   │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Translation + TTS   │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Screen + Speaker    │
+                │ Final Response      │
+                └─────────────────────┘
+
+
+# 📚 Knowledge Base
+
+SIA uses a curated knowledge base containing information collected from official government sources.
+
+For the initial prototype, we focus on 5–6 major government portals and approximately 20–40 high-value official pages/PDFs.
+
+## Official Sources
+
+### 1. Ministry of Cooperation
+- Cooperative governance
+- PACS
+- Cooperative schemes
+- Cooperative initiatives
+- Guidelines and official documents
+
+### 2. PMFBY
+- Crop insurance
+- Farmer information
+- Premium-related information
+- Policy information
+- Claims
+- Grievance information
+
+### 3. India.gov.in
+- Government schemes
+- Citizen services
+- Government programmes
+- Relevant public information
+
+### 4. RBI
+- Financial literacy
+- Banking awareness
+- Financial information
+- Consumer awareness
+
+### 5. NABARD
+- Rural finance
+- Cooperative development
+- Rural development
+- Agriculture-related financial information
+
+### 6. NCDC
+- Cooperative development
+- Financial assistance
+- Cooperative programmes
+- Cooperative-related initiatives
+
+
+# 🔍 RAG Pipeline
+
+SIA uses Retrieval-Augmented Generation (RAG) to retrieve relevant information from the knowledge base before generating an answer.
+
+```text
+Official Government Pages / PDFs
+              │
+              ▼
+      Document Collection
+              │
+              ▼
+       Text Extraction
+              │
+              ▼
+      Cleaning & Chunking
+              │
+              ▼
+          Embeddings
+              │
+              ▼
+       FAISS Vector Index
+              │
+              ▼
+      Semantic Retrieval
+              │
+              ▼
+             LLM
+              │
+              ▼
+      Grounded Answer
+              │
+              ▼
+       Source / Reference
+
+
+# 🌍 Multilingual Approach
+
+SIA is designed as a multilingual AI assistant that allows users to interact with the system in their preferred language.
+
+The system uses a single verified knowledge base instead of maintaining a separate knowledge base for every language.
+
+```text
+User Voice / Text
+       │
+       ▼
+Language Detection
+       │
+       ▼
+Speech-to-Text
+       │
+       ▼
+Query Processing
+       │
+       ▼
+FAISS Knowledge Base
+       │
+       ▼
+Relevant Information
+       │
+       ▼
+LLM
+       │
+       ▼
+Response Generation
+       │
+       ▼
+Translation
+       │
+       ▼
+Text + Voice Response
+
+
+# 🏛️ State-wise Expansion
+
+The initial prototype focuses on universal government portals that provide information applicable across India.
+
+In future versions, SIA can be expanded by adding state-specific government sources to provide information relevant to individual states.
+
+### State-specific information can include:
+
+- State cooperative laws
+- State cooperative rules
+- Registrar of Cooperative Societies (RCS) information
+- State-specific government schemes
+- State-specific PACS information
+- State-specific grievance procedures
+- State-level cooperative guidelines
+
+### Future Architecture
+
+```text
+              SIA Knowledge System
+                       │
+             ┌─────────┴─────────┐
+             │                   │
+     Universal Sources      State Sources
+             │                   │
+      Ministry of Coop.     State RCS
+      PMFBY                 State Schemes
+      RBI                   State Rules
+      NABARD                State Guidelines
+      NCDC
+             │                   │
+             └─────────┬─────────┘
+                       ▼
+                    FAISS
+                       ▼
+                      RAG
+                       ▼
+                      LLM
+
+
+# 🖥️ Hardware Prototype
+
+SIA will be deployed as a low-cost Raspberry Pi-based kiosk that provides an easy-to-use interface for cooperative members, farmers, and rural users.
+
+The kiosk will support both touchscreen and voice-based interaction.
+
+## Main Hardware Components
+
+- Raspberry Pi
+- 7-inch touchscreen
+- USB microphone
+- Speaker
+- MicroSD card
+- Power supply
+- Raspberry Pi case/cooling
+- Push-to-talk button
+- HDMI/USB cables
+- Jumper wires
+
+## Hardware Architecture
 
 ```text
                  ┌──────────────────┐
-                 │   CCTV / IP      │
-                 │     Camera       │
+                 │    Touchscreen   │
+                 │                  │
+                 │   SIA Assistant  │
                  └────────┬─────────┘
                           │
                           ▼
                  ┌──────────────────┐
-                 │   Local Router   │
-                 │   LAN Network    │
+                 │   Raspberry Pi   │
                  └────────┬─────────┘
                           │
-                          ▼
-                 ┌──────────────────┐
-                 │  Local Server /  │
-                 │     Laptop       │
-                 └────────┬─────────┘
-                          │
-                          ▼
-              ┌────────────────────────┐
-              │ AI / Computer Vision    │
-              │ Video Analytics Engine  │
-              └───────────┬────────────┘
-                          │
-                          ▼
-              ┌────────────────────────┐
-              │ Detection & Event       │
-              │ Analysis                │
-              └───────────┬────────────┘
-                          │
-                ┌─────────┴─────────┐
-                │                   │
-                ▼                   ▼
-       ┌────────────────┐   ┌────────────────┐
-       │    Backend     │   │ Local Storage  │
-       │    Services    │   │ & Event Logs   │
-       └───────┬────────┘   └────────────────┘
-               │
-               ▼
-       ┌────────────────┐
-       │   Dashboard    │
-       │    Frontend    │
-       └───────┬────────┘
-               │
-               ▼
-       ┌────────────────┐
-       │ Alerts / Event │
-       │ Visualization  │
-       └────────────────┘
+                 ┌────────┴────────┐
+                 │                 │
+                 ▼                 ▼
+            Microphone          Speaker
+                 │                 │
+                 └───────┬─────────┘
+                         │
+                         ▼
+                  SIA AI System
 
----
 
-# 🤖 AI & Computer Vision Pipeline
+# 🔄 End-to-End Working
 
-The AI module analyzes CCTV video streams and extracts useful information for surveillance.
+The complete SIA system works through the following process:
 
 ```text
-CCTV Video
-     ↓
-Frame Extraction
-     ↓
-Object Detection
-     ↓
-Object Tracking
-     ↓
-Event Analysis
-     ↓
-┌──────────────────────────────┐
-│ Person Detection             │
-│ Vehicle Detection            │
-│ Virtual Fence Detection      │
-│ Suspicious Activity          │
-│ ANPR                         │
-│ Night Movement Detection     │
-└──────────────┬───────────────┘
-               ↓
-        Risk Assessment
-               ↓
-        Alert Generation
-               ↓
-       Dashboard + Logging
+1. User asks a question
+            ↓
+2. Voice / Text Input
+            ↓
+3. Language Detection
+            ↓
+4. Speech-to-Text (if voice input)
+            ↓
+5. Query Processing
+            ↓
+6. Search FAISS Knowledge Base
+            ↓
+7. Retrieve Relevant Government Information
+            ↓
+8. Send Query + Retrieved Context to LLM
+            ↓
+9. Generate Grounded Answer
+            ↓
+10. Translate Response to User's Language
+            ↓
+11. Display Answer on Touchscreen
+            ↓
+12. Convert Answer to Speech
+            ↓
+13. Play Response Through Speaker
 
----
-
-# 🚀 Key Features
-
-- 👤 Human Detection and Tracking
-- 🚗 Vehicle Detection and Classification
-- 🚧 Virtual Fence Intrusion Detection
-- ⚠️ Suspicious Activity Detection
-- 🌙 Night-Time Movement Detection
-- 🔢 Automatic Number Plate Recognition (ANPR)
-- 📹 Real-Time CCTV Video Analysis
-- 🚨 Real-Time Security Alerts
-- 📝 Event Logging and History
-- 📊 Surveillance Dashboard
-- 🖥️ Local Network Operation
-- 💾 Local Storage of Video and Event Data
-
----
 
 # 🛠️ Technology Stack
 
-### AI & Computer Vision
-- Python
-- OpenCV
-- YOLO-based Object Detection
-- Computer Vision
-- ANPR / OCR
+| Component | Technology |
+|---|---|
+| Frontend | HTML, CSS, JavaScript / React |
+| Backend | Python + FastAPI |
+| RAG | Retrieval-Augmented Generation |
+| Vector Database | FAISS |
+| LLM | Hosted / Local LLM |
+| Speech-to-Text | Whisper / Suitable Indian-language STT |
+| Translation | Multilingual / Indic Language Model |
+| Text-to-Speech | Indian-language TTS |
+| Hardware | Raspberry Pi |
+| Display | 7-inch Touchscreen |
+| Audio Input | USB Microphone |
+| Audio Output | Speaker |
+| Knowledge Sources | Official Government Portals |
 
-### Backend
-- Python
-- FastAPI / Flask
-- REST APIs
-
-### Frontend
-- HTML
-- CSS
-- JavaScript
-- Dashboard UI
-
-### Hardware & Networking
-- IP CCTV Camera
-- Local Network / Wi-Fi Router
-- Laptop / Local Processing System
-- Local Storage
-
-### Data & Storage
-- Local Video Storage
-- Event Logs
-- JSON / SQLite
-
-### Development Tools
-- Git
-- GitHub
-- VS Code
-
----
-
-# 🏗️ System Architecture
-
-The system follows a local-network architecture where CCTV footage is processed locally using AI and Computer Vision.
+## Technology Flow
 
 ```text
-┌──────────────────┐
-│   IP CCTV Camera │
-└────────┬─────────┘
-         │
-         │ Live Video Stream
-         ▼
-┌──────────────────┐
-│   Local Network  │
-│  Wi-Fi / Router  │
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────────────┐
-│ Local Processing Laptop  │
-│                          │
-│ AI + Computer Vision     │
-│ Video Analytics Engine   │
-└────────┬─────────────────┘
-         │
-         ├───────────────┐
-         ▼               ▼
-┌────────────────┐ ┌────────────────┐
-│ Event Detection│ │ Local Storage  │
-│ & Risk Analysis│ │ Video + Logs   │
-└───────┬────────┘ └────────────────┘
-        │
-        ▼
-┌──────────────────────────┐
-│ Backend / API Services   │
-└────────────┬─────────────┘
-             │
-             ▼
-┌──────────────────────────┐
-│ Surveillance Dashboard   │
-│                          │
-│ Live Feed • Alerts       │
-│ Events • Analytics       │
-└──────────────────────────┘
+Frontend
+   ↓
+FastAPI Backend
+   ↓
+Language Processing
+   ↓
+RAG + FAISS
+   ↓
+LLM
+   ↓
+Translation
+   ↓
+Text / Voice Response
+   ↓
+Raspberry Pi Interface
 
 ---
 
-# ⚙️ How It Works
+# 👥 Team
 
-1. **Video Capture**  
-   The IP CCTV camera captures live video footage from the surveillance area.
+| Member | Role |
+|---|---|
+| Ratnadip | Team Leader + Backend/RAG + System Integration |
+| Dipanshu | Hardware + Raspberry Pi Lead |
+| Mohit | Frontend/UI Lead |
+| Debasmita | RAG + Knowledge Base + PPT + QA |
+| Jiya | Hardware Support + Speaker/Presenter |
+| Chesta | Junior Technical Support + Testing |
 
-2. **Local Video Streaming**  
-   The video stream is transmitted through the local network to the processing system.
+## 👨‍💻 Team Responsibilities
 
-3. **Frame Processing**  
-   The system extracts and processes video frames using Computer Vision techniques.
+### Ratnadip – Team Leader + Backend/RAG + System Integration
 
-4. **AI Detection**  
-   The AI model detects people, vehicles and other relevant objects in the video.
+- Overall project coordination
+- System architecture
+- Backend development
+- FastAPI
+- RAG and LLM integration
+- Multilingual pipeline
+- API integration
+- Frontend-backend integration
+- Final system integration
+- Demo coordination
 
-5. **Activity Analysis**  
-   The system analyzes movement and predefined surveillance zones to identify potentially suspicious activities.
+### 🔧 Dipanshu – Hardware + Raspberry Pi Lead
 
-6. **Event Generation**  
-   When a defined event is detected, the system generates an alert and records the event details.
+- Raspberry Pi setup
+- Touchscreen integration
+- Microphone setup
+- Speaker setup
+- Hardware connectivity
+- Power configuration
+- Kiosk assembly
+- Hardware troubleshooting
 
-7. **Local Storage**  
-   Relevant video clips, timestamps and event information are stored locally.
+### 💻 Mohit – Frontend/UI Lead
 
-8. **Dashboard Visualization**  
-   The dashboard displays the live feed, detected events, alerts and system information to the user.
+- User interface
+- Touchscreen interface
+- Chat interface
+- Language selection
+- Voice controls
+- Response display
+- Source display
+- Frontend-backend integration
 
----
+### 📚 Debasmita – RAG + Knowledge Base + PPT + QA
 
-# 🎯 Project Objectives
+- Government document preparation
+- Knowledge-base organization
+- Document cleaning
+- Text preparation
+- Chunking
+- Embedding preparation
+- FAISS/RAG development
+- Retrieval testing
+- Answer verification
+- Quality assurance
+- Complete PPT creation
 
-- Transform existing CCTV infrastructure into an intelligent surveillance system.
-- Detect and track people and vehicles in real time.
-- Identify suspicious activities and unauthorized movement.
-- Provide virtual fence intrusion detection.
-- Support Automatic Number Plate Recognition (ANPR).
-- Generate real-time security alerts for detected events.
-- Maintain event logs for later investigation.
-- Store surveillance data locally without depending on cloud services.
-- Provide a simple dashboard for monitoring and situational awareness.
-- Reduce the need for expensive dedicated surveillance hardware.
-- Improve response time and operational awareness for security personnel.
-- Build a cost-effective and scalable surveillance solution for remote locations.
+### 🔧 Jiya – Hardware Support + Speaker/Presenter
 
----
+- Assist with Raspberry Pi setup
+- Assist with touchscreen testing
+- Microphone testing
+- Speaker testing
+- Hardware connectivity checks
+- End-to-end hardware testing
+- Demo presentation
+- Demo narration
+- Judge interaction
 
-# 👥 Team Roles
+### 🧪 Chesta – Junior Technical Support + Testing
 
-| Member | Role | Responsibilities |
-|---|---|---|
-| Ratnadip | Team Leader / Manager | Project planning, task distribution, team coordination, integration, progress tracking and final presentation |
-| Dipanshu | Hardware + Embedded Engineer | Hardware connections, IP camera setup, local network hardware, physical prototype/model and hardware testing |
-| Mohit | Frontend + Dashboard Developer | Dashboard UI, live feed interface, alerts, event display and data visualization |
-| Nitish | Backend + Local Network Engineer | Backend APIs, CCTV stream handling, local network communication, local storage and integration with AI module |
-| Debasmita | QA + UI/UX + Documentation / Presenter | Testing, UI/UX improvements, bug reporting, documentation, demo preparation and presentation support |
-| Akshay | AI / Computer Vision Engineer | AI model selection/training, object detection, tracking, suspicious activity detection, ANPR and Computer Vision pipeline |
+- Collect and organize relevant official documents
+- Prepare test questions
+- Maintain testing checklist
+- Organize source information
+- Perform chatbot testing
+- Verify answers against official sources
+- Perform multilingual testing
+- Perform UI testing
+- Perform end-to-end testing
+- Report bugs
+- Perform regression testing
 
----
 
-# 🔧 Hardware Prototype
-
-The project will include a low-cost physical prototype to demonstrate how AI-based surveillance alerts can trigger physical warning devices.
-
-### Proposed Hardware
-
-- IP CCTV Camera / Webcam
-- Local Wi-Fi Router
-- Laptop / Local Server
-- ESP32
-- LED
-- Buzzer
-- Breadboard
-- Jumper Wires
-- USB Cable / Power Supply
-
-### Hardware Alert Flow
+# 📂 Project Structure
 
 ```text
-CCTV Camera
-     ↓
-AI Detection
-     ↓
-Security Event
-     ↓
-Backend
-     ↓
-ESP32
-   ↙   ↘
- LED   Buzzer
+SIH26088-SIA/
+│
+├── frontend/
+│
+├── backend/
+│
+├── rag/
+│
+├── data/
+│   ├── ministry_of_cooperation/
+│   ├── pmfby/
+│   ├── india_gov/
+│   ├── rbi/
+│   ├── nabard/
+│   └── ncdc/
+│
+├── hardware/
+│
+├── tests/
+│
+├── .gitignore
+└── README.md
 
----
 
-# 🌐 Local Network & Data Storage
+# 🧪 Testing
 
-The system is designed to operate on a **local network without mandatory cloud connectivity**.
+SIA will be tested to ensure that the chatbot provides accurate, relevant, and source-grounded responses.
 
-### Local Network Flow
+## RAG Testing
 
-```text
-IP CCTV Camera
-       ↓
-   Wi-Fi Router
-       ↓
-Local Processing Laptop
-       ↓
-AI + Backend
-       ↓
-Dashboard + Local Storage
----
+- Retrieval accuracy
+- Answer correctness
+- Source verification
+- Relevant document retrieval
+- Handling of unavailable information
 
-# 📊 Project Status
+## Multilingual Testing
 
-**Current Status:** 🚧 In Development
+- Language detection
+- English queries
+- Hindi queries
+- Punjabi queries
+- Other supported languages
 
-The project is currently in the planning and development phase.
+## Voice Testing
 
-### Development Stages
+- Speech recognition
+- Microphone input
+- Text-to-Speech
+- Speaker output
 
-- [x] Problem identification
-- [x] Feature selection
-- [x] System architecture planning
-- [x] Team role distribution
-- [ ] AI module development
-- [ ] Backend development
-- [ ] Frontend dashboard development
-- [ ] Hardware prototype development
-- [ ] System integration
-- [ ] Testing and optimization
-- [ ] Final demonstration
+## Functional Testing
 
-The project will be continuously updated as development progresses.
+- PACS-related questions
+- Cooperative governance questions
+- Government scheme questions
+- PMFBY questions
+- Financial-literacy questions
+- Grievance-related questions
 
----
+## Hardware Testing
 
-# 🧪 Testing Strategy
+- Raspberry Pi
+- Touchscreen
+- Microphone
+- Speaker
+- Power supply
+- Connectivity
 
-The system will be tested module-by-module and then as a complete integrated system.
-
-### AI Testing
-- Human detection accuracy
-- Vehicle detection accuracy
-- Object tracking
-- Virtual fence detection
-- ANPR results
-- Suspicious activity detection
-- Night-time detection
-
-### Backend Testing
-- API communication
-- CCTV stream handling
-- Event generation
-- Data storage
-- Local network communication
-
-### Frontend Testing
-- Dashboard functionality
-- Live feed display
-- Alert display
-- Event history
-- System status
-
-### Hardware Testing
-- ESP32 connectivity
-- LED response
-- Buzzer response
-- Alert triggering
-- Local network communication
-
-### Integration Testing
-
-The complete workflow will be tested:
+## Example Test Questions
 
 ```text
-CCTV
- ↓
-AI Detection
- ↓
-Event Detection
- ↓
-Backend
- ↓
-Dashboard
- ↓
-ESP32 Alert
- ↓
-Local Event Storage
+What is PACS?
 
----
+What services are provided by PACS?
 
-# 🎯 Expected Outcome
+What is PMFBY?
 
-The final prototype aims to demonstrate how existing CCTV infrastructure can be enhanced with AI-based video analytics to provide intelligent and automated border surveillance.
+Who can benefit from crop insurance?
 
-The system is expected to:
+How can I get information about cooperative schemes?
 
-- Detect and track people and vehicles.
-- Identify restricted-zone intrusions.
-- Detect predefined suspicious activities.
-- Read vehicle number plates using ANPR.
-- Generate real-time security alerts.
-- Display surveillance information through a centralized dashboard.
-- Store important events and recordings locally.
-- Trigger physical alerts using ESP32, LED and buzzer.
-- Operate primarily over a local network without mandatory cloud connectivity.
-- Provide a cost-effective and scalable prototype.
+What is cooperative governance?
 
----
+Where can I raise a cooperative grievance?
 
-# 🌟 Advantages
+What financial services should cooperative members know about?
 
-- **Cost Effective:** Uses existing CCTV infrastructure and low-cost hardware for the prototype.
-- **Local Processing:** Core functionality can operate within a local network without mandatory cloud dependency.
-- **Real-Time Monitoring:** Detects important events and provides alerts quickly.
-- **Reduced Manual Monitoring:** AI assists operators by automatically identifying potentially important events.
-- **Scalable:** Additional cameras and AI modules can be added in the future.
-- **Modular:** AI, backend, frontend and hardware modules can be developed and integrated independently.
-- **Centralized Monitoring:** Provides a single dashboard for viewing cameras, alerts and events.
-- **Physical Alert Support:** ESP32-based LED and buzzer can provide immediate physical alerts.
-- **Local Data Storage:** Important surveillance data can be stored locally for later analysis.
 
----
+# 🔐 Responsible AI
+
+SIA is designed to provide information and guidance based on verified sources.
+
+It is not intended to replace:
+
+- Lawyers
+- Government officers
+- Cooperative registrars
+- Financial advisors
+- Other authorized authorities
+
+For important legal, financial, or government matters, users should be directed to the appropriate official authority and source.
+
+## Reliability
+
+SIA uses a RAG-based approach to reduce unsupported responses by retrieving relevant information from the verified knowledge base before generating an answer.
+
+The system is designed to:
+
+- Prefer information from official sources.
+- Provide relevant source references where available.
+- Avoid presenting unsupported information as fact.
+- Inform the user when sufficient information is not available.
+
 
 # 🔮 Future Scope
 
-The project can be further enhanced in the future with:
+SIA can be further expanded and improved in the following areas:
 
-- Multi-camera intelligent tracking
-- Advanced suspicious behaviour analysis
-- Improved night-time and low-light detection
-- Edge AI processing
-- GPU-based real-time processing
-- Advanced threat and risk assessment
-- Improved ANPR accuracy
-- Secure centralized command-center integration
-- Integration with additional authorized surveillance systems
-- Deployment across multiple border surveillance locations
-- Advanced AI models for behavioural analysis
-- Automated generation of detailed surveillance reports
+## 🌐 More Indian Languages
 
----
+Support additional Indian languages and regional languages to make SIA accessible to more users across India.
 
-# 📅 Project Timeline
+## 🏛️ State-wise Information
 
-| Phase | Duration | Main Activities |
-|---|---|---|
-| Planning | Days 1–2 | Architecture, feature finalization and setup |
-| Individual Development | Days 3–5 | AI, backend, frontend and hardware modules |
-| Integration | Days 6–9 | Connect AI, backend, dashboard and hardware |
-| Advanced Features | Days 10–11 | ANPR, suspicious activity and night detection |
-| Testing | Days 12–13 | System testing, bug fixing and optimization |
-| Final Preparation | Days 14–15 | Demo rehearsal, documentation and presentation |
+Add state-specific sources such as:
 
-During the 36-hour hackathon, the team will focus primarily on **integration, improvements, testing, modifications and final presentation preparation**.
+- State cooperative laws
+- State cooperative rules
+- Registrar of Cooperative Societies
+- State-specific government schemes
+- State-specific grievance procedures
+- State-specific PACS information
 
----
+## 📱 Mobile Application
 
-# ⚠️ Disclaimer
+Develop a mobile application so users can access SIA from smartphones.
 
-This project is an academic prototype developed for **Smart India Hackathon 2026**.
+## 📡 Improved Offline Capability
 
-The system is intended to demonstrate the feasibility of AI-assisted video analytics for border surveillance. It is designed to assist trained security personnel and is **not intended to replace human judgment or operational security systems**.
+Introduce local caching and offline-friendly features for areas with limited or unreliable internet connectivity.
 
-AI-generated detections and alerts should be verified by authorized personnel before taking any operational action.
+## 🧾 Grievance Assistance
+
+Expand the system to guide users through cooperative grievance procedures and help identify the appropriate authority.
+
+## 🏢 Cooperative Office Deployment
+
+Deploy SIA kiosks in:
+
+- PACS offices
+- Cooperative societies
+- Rural service centers
+- Government assistance centers
+
+## 📊 Feedback and Analytics
+
+Add:
+
+- User feedback
+- Frequently asked questions
+- Usage analytics
+- Retrieval quality monitoring
+
+## 🤖 Improved AI Capabilities
+
+Future versions can include improved multilingual models, better legal-document retrieval, and more advanced conversational capabilities.
 
 
----
+# 🎯 Project Vision
 
-# 📜 License
+SIA aims to make reliable cooperative and government information accessible through voice, language, and simple conversation.
 
-This project is developed for academic and Smart India Hackathon purposes.
+The goal is to reduce information and language barriers faced by cooperative members, farmers, and rural stakeholders by providing an easy-to-use AI assistant backed by verified government sources.
 
-The source code and project materials are intended for educational, research and demonstration purposes.
+## SIA – Smart Indian Assistant
+
+ Your Voice. Your Language. Your Rights.
+
+# 🎥 Demo
+
+The prototype demonstrates:
+
+- Multilingual text-based interaction
+- Voice-based interaction
+- Government information retrieval using RAG
+- Source-grounded responses
+- Raspberry Pi touchscreen interface
+- Audio response through speaker
+
+
+## 📄 License
+
+This project is developed as a prototype for Smart India Hackathon 2026.
+
+# 🏆 Smart India Hackathon 2026
+
+**Problem Statement ID:** SIH26088
+
+**Problem Statement:** Multilingual Cooperative Governance & Legal Assistance Chatbot
+
+**Organization:** Ministry of Cooperation
+
+**Category:** Hardware
+
+**Theme:** Agriculture, FoodTech & Rural Development
+
+**Project Name:** SIA – Smart Indian Assistant
+
+## 📌 Project Status
+
+**Status:** In Development
+
+SIA is being developed as a Smart India Hackathon 2026 prototype with a focus on:
+
+- Multilingual AI assistance
+- RAG-based government knowledge assistance
+- Cooperative governance and legal information
+- Government scheme assistance
+- Agriculture and crop insurance support
+- Voice-based interaction
+- Raspberry Pi-based hardware
+- Source-grounded responses
+- Rural accessibility
