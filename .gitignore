@@ -8,3 +8,4 @@ node_modules/
 *.pth
 *.onnx
 .DS_Store
+.env
