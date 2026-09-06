@@ -68,6 +68,36 @@ document.addEventListener('click', (e) => {
         });
     });
 
+    // Function to fetch message data from your backend
+async function fetchInboxData() {
+    try {
+        // Replace this URL with your actual backend endpoint
+        const response = await fetch('http://localhost:3000/api/messages');
+        const data = await response.json();
+        
+        const badge = document.getElementById('messageBadge');
+        
+        // Update the UI based on what the backend sends back
+        if (data.unreadCount > 0) {
+            badge.textContent = data.unreadCount;
+            badge.style.display = 'block'; // Show badge
+        } else {
+            badge.style.display = 'none'; // Hide badge if 0 messages
+        }
+    } catch (error) {
+        console.error('Error connecting to backend:', error);
+    }
+}
+
+// Call the function when the page loads to check for messages
+// Uncomment the line below when your backend is ready!
+// fetchInboxData(); 
+
+// Handle clicking the inbox button
+document.getElementById('inboxBtn').addEventListener('click', () => {
+    // You would typically open a modal, a sidebar, or navigate to an inbox page here
+    alert("Opening inbox! This is where you display the fetched messages.");
+});
 
     // Translation Dictionary
 const translations = {
