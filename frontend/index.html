@@ -14,11 +14,11 @@
 
         <header class="logo-container fade-in">
             <h1 class="logo-title"><i class="fa-solid fa-leaf" style="color: #4CAF50; font-size: 0.8em; margin-bottom: 5px;"></i><br>SIA</h1>
-            <p class="logo-subtitle">Your Cooperative<br>AI Assistant</p>
+            <p class="logo-subtitle" data-translate="subtitle">Your Cooperative<br>AI Assistant</p>
         </header>
 
         <main class="main-content">
-            <div class="floating-text left-text fade-in-delayed">
+            <div class="floating-text left-text fade-in-delayed" data-translate="slogan1">
                 Sahi<br>Jaankari<br>Sabke Liye
             </div>
 
@@ -27,20 +27,31 @@
             </div>
 
             <div class="speech-bubble pop-in">
-                <h2>Hello! 😊</h2>
-                <p class="intro">I am SIA, your Cooperative and Government Assistant.</p>
-                <p class="description">Ask me anything about schemes, cooperative laws, eligibility, or more!</p>
+                <h2 data-translate="hello">Hello! 😊</h2>
+                <p class="intro" data-translate="intro">I am SIA, your Cooperative and Government Assistant.</p>
+                <p class="description" data-translate="desc">Ask me anything about schemes, cooperative laws, eligibility, or more!</p>
             </div>
 
-            <div class="floating-text right-text fade-in-delayed">
+            <div class="floating-text right-text fade-in-delayed" data-translate="slogan2">
                 Sahakar<br>Se<br>Samriddhi
             </div>
         </main>
 
         <footer class="bottom-bar slide-up">
-            <div class="control-btn lang-btn glass-effect">
+            <!-- Replace your existing lang-btn div with this -->
+            <div class="control-btn lang-btn glass-effect" id="langBtn">
                 <i class="fa-solid fa-globe"></i>
-                <span>English | हिंदी | ਪੰਜਾਬੀ | More ▼</span>
+                <span id="selectedLang">English | हिंदी | ਪੰਜਾਬੀ | More ▼</span>
+                
+                <!-- Updated Dropdown Menu -->
+                <div class="dropdown-menu" id="langDropdown">
+                    <div class="dropdown-item" data-lang="en">English</div>
+                    <div class="dropdown-item" data-lang="bn">Bengali (বাংলা)</div>
+                    <div class="dropdown-item" data-lang="hi">Hindi (हिंदी)</div>
+                    <div class="dropdown-item" data-lang="pa">Punjabi (ਪੰਜਾਬੀ)</div>
+                    <div class="dropdown-item" data-lang="mr">Marathi (मराठी)</div>
+                    <div class="dropdown-item" data-lang="ta">Tamil (தமிழ்)</div>
+                </div>
             </div>
 
             <div class="voice-control glass-effect">
@@ -52,15 +63,15 @@
                     <i class="fa-solid fa-microphone"></i>
                 </button>
                 
+                <!-- ✅ Removed the duplicate text div below this -->
                 <div class="sound-waves right-waves">
-                    <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                    <div class="tap-text" data-translate="tap">Tap to speak</div>
                 </div>
-                <div class="tap-text">Tap to speak</div>
             </div>
 
             <div class="control-btn keyboard-btn glass-effect">
                 <i class="fa-solid fa-keyboard"></i>
-                <span>Type instead ➔</span>
+                <span data-translate="type">Type instead ➔</span>
             </div>
         </footer>
     </div>
