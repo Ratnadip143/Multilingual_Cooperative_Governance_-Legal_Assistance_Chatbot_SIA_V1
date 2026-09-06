@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIA - Your Cooperative AI Assistant</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <div class="background-overlay"></div>
+
+        <header class="logo-container fade-in">
+            <h1 class="logo-title"><i class="fa-solid fa-leaf" style="color: #4CAF50; font-size: 0.8em; margin-bottom: 5px;"></i><br>SIA</h1>
+            <p class="logo-subtitle">Your Cooperative<br>AI Assistant</p>
+        </header>
+
+        <main class="main-content">
+            <div class="floating-text left-text fade-in-delayed">
+                Sahi<br>Jaankari<br>Sabke Liye
+            </div>
+
+            <div class="robot-container">
+                <img src="kokk.png" alt="SIA Robot" class="robot-image float-anim sticker-effect">
+            </div>
+
+            <div class="speech-bubble pop-in">
+                <h2>Hello! 😊</h2>
+                <p class="intro">I am SIA, your Cooperative and Government Assistant.</p>
+                <p class="description">Ask me anything about schemes, cooperative laws, eligibility, or more!</p>
+            </div>
+
+            <div class="floating-text right-text fade-in-delayed">
+                Sahakar<br>Se<br>Samriddhi
+            </div>
+        </main>
+
+        <footer class="bottom-bar slide-up">
+            <div class="control-btn lang-btn glass-effect">
+                <i class="fa-solid fa-globe"></i>
+                <span>English | हिंदी | ਪੰਜਾਬੀ | More ▼</span>
+            </div>
+
+            <div class="voice-control glass-effect">
+                <div class="sound-waves left-waves">
+                    <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </div>
+                
+                <button class="mic-btn pulse-anim" id="micButton">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
+                
+                <div class="sound-waves right-waves">
+                    <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </div>
+                <div class="tap-text">Tap to speak</div>
+            </div>
+
+            <div class="control-btn keyboard-btn glass-effect">
+                <i class="fa-solid fa-keyboard"></i>
+                <span>Type instead ➔</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

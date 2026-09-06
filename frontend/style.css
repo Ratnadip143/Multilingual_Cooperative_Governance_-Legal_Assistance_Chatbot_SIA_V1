@@ -1,0 +1,290 @@
+:root {
+    --primary-green: #0a4d2e;
+    --light-green: #eaf6ed;
+    --accent-green: #1b7a43;
+    --text-dark: #1a3322;
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(255, 255, 255, 0.4);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+   font-family: 'Poppins', sans-serif;
+    
+    /* 1. Add your image path inside the quotes */
+    background-image: url('pexels-2148460223-30143816.jpg'); 
+    
+    /* 2. Ensure it covers the whole screen without repeating */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    
+    height: 100vh;
+    overflow: hidden;
+    color: var(--text-dark);
+}
+
+.app-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Typography & Branding --- */
+.logo-container {
+    position: absolute;
+    top: 40px;
+    left: 50px;
+    z-index: 10;
+}
+
+.logo-title {
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: var(--primary-green);
+    line-height: 0.8;
+}
+
+.logo-subtitle {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--primary-green);
+    margin-top: 10px;
+}
+
+/* Handwritten Texts */
+.floating-text {
+    font-family: 'Caveat', cursive;
+    font-size: 2.5rem;
+    color: var(--primary-green);
+    position: absolute;
+    transform: rotate(-5deg);
+}
+
+.left-text {
+    top: 30%;
+    left: 80px;
+}
+
+.right-text {
+    top: 50%;
+    right: 80px;
+    transform: rotate(-10deg);
+}
+
+/* --- Main Layout --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+/* Robot */
+.robot-container {
+    z-index: 5;
+    margin-right: 20px;
+    margin-top: 50px;
+    
+}
+
+.sticker-effect {
+    /* 
+      The first four drop-shadows create a thick white outline.
+      The final drop-shadow creates the soft shadow beneath the "sticker".
+    */
+    filter: 
+        drop-shadow(3px 3px 0px white) 
+        drop-shadow(-3px -3px 0px white) 
+        drop-shadow(3px -3px 0px white) 
+        drop-shadow(-3px 3px 0px white)
+        drop-shadow(0px 15px 20px rgba(0, 0, 0, 0.25));
+        
+    /* Optional: Slight rotation to make it look playfully placed */
+    transform: rotate(-2deg);
+}
+
+.robot-image {
+    max-width: 400px;
+    height: auto;
+    filter: drop-shadow(0px 20px 15px rgba(0,0,0,0.15));
+}
+
+/* Speech Bubble */
+.speech-bubble {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    padding: 30px;
+    border-radius: 30px;
+    border-top-left-radius: 5px; /* Points toward robot */
+    max-width: 350px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    z-index: 5;
+    margin-bottom: 100px;
+}
+
+.speech-bubble h2 {
+    color: var(--primary-green);
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.speech-bubble .intro {
+    font-weight: 600;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+}
+
+.speech-bubble .description {
+    font-size: 0.95rem;
+    color: #444;
+}
+
+/* --- Bottom Bar --- */
+.bottom-bar {
+    position: absolute;
+    bottom: 30px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding: 0 50px;
+    z-index: 10;
+}
+
+.glass-effect {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.05);
+}
+
+.control-btn {
+    padding: 15px 25px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform 0.2s ease, background 0.2s;
+}
+
+.control-btn:hover {
+    transform: translateY(-3px);
+    background: #ffffff;
+}
+
+/* Voice Control Center */
+.voice-control {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 15px 40px;
+    border-radius: 50px;
+    position: relative;
+    padding-bottom: 30px; /* space for text */
+}
+
+.mic-btn {
+    background-color: var(--accent-green);
+    color: white;
+    border: none;
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    font-size: 1.8rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 20px rgba(27, 122, 67, 0.3);
+    z-index: 2;
+    transition: background-color 0.3s;
+}
+
+.mic-btn:hover {
+    background-color: var(--primary-green);
+}
+
+.tap-text {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--primary-green);
+}
+
+/* Sound Waves */
+.sound-waves {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    height: 30px;
+}
+
+.bar {
+    width: 3px;
+    background-color: var(--accent-green);
+    border-radius: 3px;
+    height: 10px;
+    opacity: 0.5;
+    transition: height 0.2s ease;
+}
+
+/* --- ANIMATIONS --- */
+
+/* 1. Floating Robot */
+.float-anim {
+    animation: float 4s ease-in-out infinite;
+}
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-15px); }
+    100% { transform: translateY(0px); }
+}
+
+/* 2. Pulsing Mic */
+.pulse-anim {
+    animation: pulse 2s infinite;
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(27, 122, 67, 0.4); }
+    70% { box-shadow: 0 0 0 15px rgba(27, 122, 67, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(27, 122, 67, 0); }
+}
+
+/* 3. Intro Fades */
+.fade-in { animation: fadeIn 1s ease forwards; }
+.fade-in-delayed { opacity: 0; animation: fadeIn 1s ease 0.5s forwards; }
+.pop-in { opacity: 0; transform: scale(0.9); animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.8s forwards; }
+.slide-up { opacity: 0; transform: translateY(30px); animation: slideUp 0.8s ease 0.3s forwards; }
+
+@keyframes fadeIn { to { opacity: 1; } }
+@keyframes popIn { to { opacity: 1; transform: scale(1); } }
+@keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+
+/* Active listening waves (Triggered via JS) */
+.listening .bar {
+    animation: wave 1s infinite alternate ease-in-out;
+}
+.listening .bar:nth-child(1) { animation-delay: 0.0s; }
+.listening .bar:nth-child(2) { animation-delay: 0.2s; }
+.listening .bar:nth-child(3) { animation-delay: 0.4s; }
+.listening .bar:nth-child(4) { animation-delay: 0.1s; }
+
+@keyframes wave {
+    0% { height: 10px; opacity: 0.5; }
+    100% { height: 25px; opacity: 1; background-color: var(--primary-green); }
+}
