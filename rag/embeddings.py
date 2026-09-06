@@ -6,8 +6,14 @@ model = SentenceTransformer(MODEL_NAME)
 
 
 def create_embedding(text):
-    return model.encode(text)
+    return model.encode(
+        text,
+        normalize_embeddings=True
+    )
 
 
 def create_embeddings(texts):
-    return model.encode(texts)
+    return model.encode(
+        texts,
+        normalize_embeddings=True
+    )

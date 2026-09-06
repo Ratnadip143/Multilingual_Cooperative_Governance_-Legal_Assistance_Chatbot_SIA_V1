@@ -9,3 +9,4 @@ node_modules/
 *.onnx
 .DS_Store
 .env
+vectorstore/
