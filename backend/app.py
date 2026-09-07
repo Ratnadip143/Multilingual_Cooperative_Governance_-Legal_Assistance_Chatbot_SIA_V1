@@ -1,117 +1,773 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from pathlib import Path
 
 import os
+import re
+
 from dotenv import load_dotenv
-from openai import OpenAI
+from sarvamai import SarvamAI
 
-load_dotenv()
-
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+from backend.language_detection import detect_language
 
 from rag.ingest import load_and_chunk_documents
 from rag.embeddings import create_embeddings
 from rag.vectorstore import create_vector_store
 from rag.retrieve import retrieve
 
-app = FastAPI(title="SIA - Smart Indian Assistant")
+
+# =========================================================
+# LOAD ENVIRONMENT
+# =========================================================
+
+load_dotenv()
+
+SARVAM_API_KEY = os.getenv("SARVAM_API_KEY")
+
+if not SARVAM_API_KEY:
+    raise RuntimeError("SARVAM_API_KEY is missing from .env")
 
 
-class QuestionRequest(BaseModel):
-    question: str
-    language: str = "English"
+# =========================================================
+# SARVAM CLIENT
+# =========================================================
+
+client = SarvamAI(
+    api_subscription_key=SARVAM_API_KEY
+)
 
 
-# Load knowledge base when the server starts
-chunks = load_and_chunk_documents()
+# =========================================================
+# FASTAPI APP
+# =========================================================
 
-if chunks:
-    embeddings = create_embeddings([chunk["text"] for chunk in chunks])
-    vector_store = create_vector_store(embeddings)
-else:
-    vector_store = None
+app = FastAPI(
+    title="SIA – Smart Indian Assistant"
+)
+
+
+# =========================================================
+# FRONTEND
+# =========================================================
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+FRONTEND_DIR = BASE_DIR / "frontend"
+
+
+app.mount(
+    "/static",
+    StaticFiles(directory=FRONTEND_DIR),
+    name="static"
+)
 
 
 @app.get("/")
-def root():
-    return {
-        "message": "SIA Backend is running",
-        "status": "success"
-    }
+def serve_frontend():
 
+    return FileResponse(
+        FRONTEND_DIR / "chat.html"
+    )
+
+
+# =========================================================
+# REQUEST MODEL
+# =========================================================
+
+class QuestionRequest(BaseModel):
+
+    question: str
+
+    language: str = "English"
+
+
+# =========================================================
+# LOAD KNOWLEDGE BASE
+# =========================================================
+
+print("========================================")
+print("Loading knowledge base...")
+print("========================================")
+
+
+chunks = load_and_chunk_documents()
+
+
+print(
+    "Total knowledge base chunks:",
+    len(chunks)
+)
+
+
+if chunks:
+
+    print("Creating embeddings...")
+
+    embeddings = create_embeddings(
+        [chunk["text"] for chunk in chunks]
+    )
+
+
+    print("Creating FAISS vector store...")
+
+    vector_store = create_vector_store(
+        embeddings
+    )
+
+
+    print("Knowledge base ready.")
+
+
+else:
+
+    vector_store = None
+
+    print(
+        "WARNING: Knowledge base is empty."
+    )
+
+
+# =========================================================
+# HEALTH CHECK
+# =========================================================
 
 @app.get("/health")
 def health():
+
     return {
+
         "status": "healthy",
-        "knowledge_base_loaded": bool(chunks),
-        "documents": len(chunks)
+
+        "knowledge_base_loaded":
+            bool(chunks),
+
+        "documents":
+            len(chunks)
     }
 
 
+# =========================================================
+# CLEAN ANSWER
+# =========================================================
+
+def clean_answer(answer: str):
+
+    if not answer:
+        return ""
+
+
+    answer = answer.strip()
+
+
+    # Remove Markdown symbols
+
+    answer = answer.replace(
+        "**",
+        ""
+    )
+
+    answer = answer.replace(
+        "*",
+        ""
+    )
+
+
+    # Remove heading symbols
+
+    answer = re.sub(
+        r"^#{1,6}\s*",
+        "",
+        answer,
+        flags=re.MULTILINE
+    )
+
+
+    # Unwanted starting phrases
+
+    unwanted_phrases = [
+
+        "Based on the provided knowledge base context, here is the information available about",
+
+        "Based on the provided knowledge base context, here is the information",
+
+        "Based on the provided knowledge base context",
+
+        "Based on the provided context, here is the information",
+
+        "Based on the provided context",
+
+        "Here is the information available about",
+
+        "Here is the information about",
+
+        "Here is the information",
+
+        "The information available is",
+
+        "According to the provided context",
+
+        "According to the knowledge base"
+
+    ]
+
+
+    # Remove unwanted phrase if present
+
+    changed = True
+
+    while changed:
+
+        changed = False
+
+        for phrase in unwanted_phrases:
+
+            if answer.lower().startswith(
+                phrase.lower()
+            ):
+
+                answer = answer[
+                    len(phrase):
+                ].strip()
+
+                changed = True
+
+
+    return answer
+
+
+# =========================================================
+# TRANSLATE QUERY TO ENGLISH
+# =========================================================
+
+def translate_query_to_english(
+    question: str
+):
+
+    try:
+
+        print(
+            "Translating query to English..."
+        )
+
+
+        response = client.chat.completions(
+
+            model="sarvam-105b",
+
+            messages=[
+
+                {
+                    "role": "system",
+
+                    "content": """
+Translate the user's question into clear English.
+
+The translation will be used ONLY for searching
+a government knowledge base.
+
+Return ONLY the English translation.
+
+Do not answer the question.
+
+Do not explain anything.
+"""
+                },
+
+                {
+                    "role": "user",
+
+                    "content": question
+                }
+
+            ],
+
+            temperature=0,
+
+            max_tokens=100,
+
+            reasoning_effort=None
+        )
+
+
+        translated = (
+            response
+            .choices[0]
+            .message
+            .content
+            .strip()
+        )
+
+
+        print(
+            "English query:",
+            translated
+        )
+
+
+        return translated
+
+
+    except Exception as e:
+
+        print(
+            "Translation error:",
+            e
+        )
+
+
+        # Use original question if
+        # translation fails
+
+        return question
+
+
+# =========================================================
+# ASK ENDPOINT
+# =========================================================
+
 @app.post("/ask")
-def ask_question(request: QuestionRequest):
+def ask_question(
+    request: QuestionRequest
+):
+
+
+    # =====================================================
+    # LANGUAGE DETECTION
+    # =====================================================
+
+    detected = detect_language(
+        request.question
+    )
+
+
+    language_name = detected[
+        "language"
+    ]
+
+
+    print()
+    print("========================================")
+
+    print(
+        "USER QUESTION:",
+        request.question
+    )
+
+    print(
+        "DETECTED LANGUAGE:",
+        language_name
+    )
+
+    print("========================================")
+
+
+    # =====================================================
+    # KNOWLEDGE BASE CHECK
+    # =====================================================
+
     if vector_store is None:
+
         return {
-            "question": request.question,
-            "language": request.language,
-            "answer": "Knowledge base is not available.",
+
+            "question":
+                request.question,
+
+            "language":
+                language_name,
+
+            "answer":
+                "The information is not available in the knowledge base.",
+
             "sources": []
         }
 
-    results = retrieve(
-        request.question,
-        vector_store,
-        chunks,
-        top_k=3
+
+    # =====================================================
+    # CREATE SEARCH QUERY
+    # =====================================================
+
+    search_query = request.question
+
+
+    if language_name != "English":
+
+        search_query = (
+            translate_query_to_english(
+                request.question
+            )
+        )
+
+
+    # =====================================================
+    # SEARCH TRANSLATED QUERY
+    # =====================================================
+
+    print(
+        "Searching translated query..."
     )
+
+
+    translated_results = retrieve(
+
+        search_query,
+
+        vector_store,
+
+        chunks,
+
+        top_k=5
+    )
+
+
+    print(
+        "Translated query results:",
+        len(translated_results)
+    )
+
+
+    # =====================================================
+    # SEARCH ORIGINAL QUERY
+    # =====================================================
+
+    print(
+        "Searching original query..."
+    )
+
+
+    original_results = retrieve(
+
+        request.question,
+
+        vector_store,
+
+        chunks,
+
+        top_k=5
+    )
+
+
+    print(
+        "Original query results:",
+        len(original_results)
+    )
+
+
+    # =====================================================
+    # COMBINE RESULTS
+    # =====================================================
+
+    results = []
+
+    seen = set()
+
+
+    # First add translated results
+
+    for result in translated_results:
+
+        text = result.get(
+            "text",
+            ""
+        )
+
+
+        if text and text not in seen:
+
+            results.append(
+                result
+            )
+
+            seen.add(
+                text
+            )
+
+
+    # Then add original results
+
+    for result in original_results:
+
+        text = result.get(
+            "text",
+            ""
+        )
+
+
+        if text and text not in seen:
+
+            results.append(
+                result
+            )
+
+            seen.add(
+                text
+            )
+
+
+    # Keep maximum 5 chunks
+
+    results = results[:5]
+
+
+    print(
+        "Final RAG results:",
+        len(results)
+    )
+
+
+    # =====================================================
+    # NO RESULTS
+    # =====================================================
 
     if not results:
+
         return {
-            "question": request.question,
-            "language": request.language,
-            "answer": "I could not find relevant information in the knowledge base.",
+
+            "question":
+                request.question,
+
+            "language":
+                language_name,
+
+            "answer":
+                "The information is not available in the knowledge base.",
+
             "sources": []
         }
 
+
+    # =====================================================
+    # BUILD CONTEXT
+    # =====================================================
+
+    context_parts = []
+
+
+    for result in results:
+
+        text = result.get(
+            "text",
+            ""
+        )
+
+
+        if text:
+
+            context_parts.append(
+                text
+            )
+
+
     context = "\n\n".join(
-        result["text"] for result in results
+        context_parts
     )
+
+
+    # =====================================================
+    # LLM PROMPT
+    # =====================================================
 
     prompt = f"""
-You are SIA (Smart Indian Assistant), a helpful government information assistant.
+You are SIA (Smart Indian Assistant), a helpful
+government information assistant.
 
-Answer the user's question using ONLY the provided knowledge base context.
+You answer questions about:
 
-If the context does not contain enough information to answer the question,
-say that the information is not available in the knowledge base.
+- Cooperative societies
+- PACS
+- Government schemes
+- Agriculture
+- Rural development
+- Cooperative laws
+- Government services
 
-Do not invent laws, schemes, rules, dates, or facts.
+IMPORTANT RULES:
 
-Respond in {request.language}.
+1. Answer ONLY using the knowledge context below.
 
-Knowledge Base Context:
+2. Do not invent facts.
+
+3. Do not invent laws.
+
+4. Do not invent schemes.
+
+5. Do not invent dates.
+
+6. Do not invent statistics.
+
+7. Do not make assumptions that are not supported
+by the context.
+
+8. If the context does not contain enough information
+to answer the user's question, respond with:
+
+The information is not available in the knowledge base.
+
+9. Respond in {language_name}.
+
+10. Start DIRECTLY with the answer.
+
+11. NEVER start with:
+
+"Based on the provided knowledge base context"
+
+"Based on the provided context"
+
+"Here is the information"
+
+"The information available is"
+
+"According to the knowledge base"
+
+12. Do not mention the knowledge base when you
+can directly answer the question.
+
+13. Do not repeat the user's question.
+
+14. Do not use Markdown.
+
+15. Do not use:
+
+*
+**
+#
+##
+###
+|
+tables
+
+16. Keep the answer clear, natural and concise.
+
+17. Make the answer easy to understand for rural users.
+
+KNOWLEDGE CONTEXT:
+
 {context}
 
-User Question:
+USER QUESTION:
+
 {request.question}
+
+Provide ONLY the final answer.
 """
 
-    response = client.responses.create(
-        model="gpt-5.6-luna",
-        input=prompt
-    )
 
-    answer = response.output_text
+    # =====================================================
+    # SARVAM LLM
+    # =====================================================
+
+    try:
+
+        print(
+            "Generating answer with Sarvam..."
+        )
+
+
+        response = client.chat.completions(
+
+            model="sarvam-105b",
+
+            messages=[
+
+                {
+                    "role": "system",
+
+                    "content":
+                    "You are SIA, a precise government information assistant."
+                },
+
+                {
+                    "role": "user",
+
+                    "content": prompt
+                }
+
+            ],
+
+            temperature=0,
+
+            max_tokens=400,
+
+            reasoning_effort=None
+        )
+
+
+        answer = (
+            response
+            .choices[0]
+            .message
+            .content
+        )
+
+
+        # Clean answer
+
+        answer = clean_answer(
+            answer
+        )
+
+
+        print(
+            "FINAL ANSWER:",
+            answer
+        )
+
+
+    except Exception as e:
+
+        print(
+            "Sarvam LLM error:",
+            e
+        )
+
+
+        return {
+
+            "question":
+                request.question,
+
+            "language":
+                language_name,
+
+            "answer":
+                "Sorry, I could not generate the answer right now.",
+
+            "sources": []
+        }
+
+
+    # =====================================================
+    # SOURCES
+    # =====================================================
 
     sources = list({
-        result["source"]
+
+        result.get(
+            "source",
+            "Unknown"
+        )
+
         for result in results
+
     })
 
+
+    # =====================================================
+    # FINAL RESPONSE
+    # =====================================================
+
     return {
-        "question": request.question,
-        "language": request.language,
-        "answer": answer,
-        "sources": sources
+
+        "question":
+            request.question,
+
+        "language":
+            language_name,
+
+        "answer":
+            answer,
+
+        "sources":
+            sources
     }

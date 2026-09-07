@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIA AI Clone</title>
-    <link rel="stylesheet" href="chat.css">
+    <link rel="stylesheet" href="/static/chat.css">
 </head>
 <body>
 
@@ -19,10 +19,11 @@
                 </div>
             </div>
             <div class="header-right">
-                <span>Thu, 5 Sept 2026</span>
-                <strong>03:15 PM</strong>
-                <span>📶 ⚙️</span>
-            </div>
+    <span id="current-date">Loading date...</span>
+    <strong id="current-time">Loading time...</strong>
+    <span id="connection-status" class="connection-status">📶</span>
+    <button id="settings-btn" class="settings-btn" title="Settings">⚙️</button>
+</div>
         </header>
 
         <!-- Main Content -->
@@ -40,7 +41,7 @@
                                 I am SIA, your cooperative and government assistance AI.<br>
                                 How can I help you today?
                             </div>
-                            <span class="time">03:14 PM</span>
+                            <span class="message-time" id="initial-message-time"></span>
                             <div class="suggestions">
                                 <button class="chip chip-green" data-translate="chip_find">Find Schemes</button>
                                 <button class="chip chip-blue" data-translate="chip_eligibility">Check Eligibility</button>
@@ -50,17 +51,8 @@
                         </div>
                     </div>
 
-                    <!-- User Message -->
-                    <div class="message-row user">
-                        <div class="message-content">
-                            <div class="bubble" data-translate="user_msg_1">
-                                What schemes are available for farmers?
-                            </div>
-                            <span class="time">03:15 PM ✓✓</span>
-                        </div>
-                    </div>
-                </div>
 
+</div>
                 <!-- Input Area -->
                 <div class="input-area">
                     <div class="input-box">
@@ -148,6 +140,6 @@
         </div>
     </div>
 
-    <script src="chat.js"></script>
+    <script src="/static/chat.js"></script>
 </body>
 </html>

@@ -1,25 +1,24 @@
-from langdetect import detect, LangDetectException
+from langdetect import detect, DetectorFactory, LangDetectException
 
+DetectorFactory.seed = 0
 
 SUPPORTED_LANGUAGES = {
     "en": "English",
     "hi": "Hindi",
-    "bn": "Bengali",
     "pa": "Punjabi",
-    "mr": "Marathi",
+    "bn": "Bengali",
     "ta": "Tamil",
-    "te": "Telugu",
-    "gu": "Gujarati",
-    "kn": "Kannada",
-    "ml": "Malayalam",
-    "or": "Odia",
-    "as": "Assamese",
-    "ur": "Urdu",
-    "ne": "Nepali"
+    "mr": "Marathi"
 }
 
 
 def detect_language(text: str):
+    if not text or not text.strip():
+        return {
+            "code": "unknown",
+            "language": "Unknown"
+        }
+
     try:
         language_code = detect(text)
 

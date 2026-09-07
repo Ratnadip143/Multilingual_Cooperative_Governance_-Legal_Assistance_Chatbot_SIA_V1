@@ -305,13 +305,23 @@ async function sendMessage() {
     chatHistory.scrollTop = chatHistory.scrollHeight;
 
     try {
-        const response = await fetch('http://localhost:3000/api/chat', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text })
-        });
-        const data = await response.json();
-        appendBotMessage(data.reply);
+        const response = await fetch('/ask', {
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+        question: text
+    })
+});
+
+if (!response.ok) {
+    throw new Error(`Server error: ${response.status}`);
+}
+
+const data = await response.json();
+
+appendBotMessage(data.answer);
     } catch (error) {
         console.error("Error:", error);
         appendBotMessage("Sorry, server error.");
@@ -325,7 +335,7 @@ function appendBotMessage(botText) {
         <div class="message-row bot">
             <div class="avatar">🤖</div>
             <div class="message-content">
-                <div class="bubble">${botText}</div>
+                <div class="bubble">${botText.replace(/\*/g, "")}</div>
                 <span class="time">${getCurrentTime()}</span>
             </div>
         </div>
@@ -333,3 +343,57 @@ function appendBotMessage(botText) {
     chatHistory.insertAdjacentHTML('beforeend', botHTML);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
+// Live date and time
+function updateDateTime() {
+    const now = new Date();
+
+    const dateElement = document.getElementById("current-date");
+    const timeElement = document.getElementById("current-time");
+
+    if (dateElement) {
+        dateElement.textContent = now.toLocaleDateString("en-IN", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+            year: "numeric"
+        });
+    }
+
+    if (timeElement) {
+        timeElement.textContent = now.toLocaleTimeString("en-IN", {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true
+        });
+    }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    updateDateTime();
+
+    const initialTime = document.getElementById("initial-message-time");
+
+    if (initialTime) {
+        initialTime.textContent = getCurrentTime();
+    }
+
+    setInterval(() => {
+        updateDateTime();
+
+        if (initialTime) {
+            initialTime.textContent = getCurrentTime();
+        }
+    }, 1000);
+});
+// Connection status
+function updateConnectionStatus() {
+    const status = document.getElementById("connection-status");
+
+    if (!status) return;
+
+    status.textContent = navigator.onLine ? "📶" : "📵";
+}
+window.addEventListener("online", updateConnectionStatus);
+window.addEventListener("offline", updateConnectionStatus);
+
+document.addEventListener("DOMContentLoaded", updateConnectionStatus);

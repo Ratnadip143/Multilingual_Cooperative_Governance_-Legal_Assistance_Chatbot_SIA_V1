@@ -6,3 +6,5 @@ faiss-cpu
 openai
 python-dotenv
 langdetect
+sarvamai
+PyMuPDF
