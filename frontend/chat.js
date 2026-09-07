@@ -216,7 +216,7 @@ function changeLanguage(langCode) {
 }
 
 // --- 3. Dropdown Logic ---
-const moreLangBtn = document.getElementById("more-btn"); // ID from HTML
+const moreLangBtn = document.getElementById("more-lang-btn"); // ID from HTML
 const moreDropdown = document.querySelector(".dropdown");
 
 if (moreLangBtn && moreDropdown) {
