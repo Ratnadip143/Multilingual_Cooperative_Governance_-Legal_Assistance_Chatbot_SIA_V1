@@ -343,6 +343,7 @@ function appendBotMessage(botText) {
     chatHistory.insertAdjacentHTML('beforeend', botHTML);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
+<<<<<<< Updated upstream
 // Live date and time
 function updateDateTime() {
     const now = new Date();
@@ -397,3 +398,5 @@ window.addEventListener("online", updateConnectionStatus);
 window.addEventListener("offline", updateConnectionStatus);
 
 document.addEventListener("DOMContentLoaded", updateConnectionStatus);
+=======
+>>>>>>> Stashed changes
