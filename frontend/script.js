@@ -194,3 +194,19 @@ allDropdownItems.forEach(item => {
     });
     });
 });
+
+
+// Get the button and the overlay
+const typeBtn = document.getElementById('typeBtn');
+const transitionOverlay = document.getElementById('transitionOverlay');
+
+typeBtn.addEventListener('click', () => {
+    // 1. Start the white expansion animation
+    transitionOverlay.classList.add('expand');
+    
+    // 2. Wait for the animation to finish (700 milliseconds), then change the page
+    setTimeout(() => {
+        // Replace 'chat.html' with the actual name of your next HTML file
+        window.location.href = 'chat.html'; 
+    }, 700); 
+});
