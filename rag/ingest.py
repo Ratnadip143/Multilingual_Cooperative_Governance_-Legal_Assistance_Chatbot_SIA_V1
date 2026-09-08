@@ -1,7 +1,7 @@
 from pathlib import Path
 import re
 
-import fitz  # PyMuPDF
+import pymupdf# PyMuPDF
 
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -26,7 +26,7 @@ def extract_pdf(file_path):
 
     documents = []
 
-    pdf = fitz.open(file_path)
+    pdf = pymupdf.open(file_path)
 
     for page_number, page in enumerate(pdf, start=1):
         text = page.get_text("text")

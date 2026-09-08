@@ -333,7 +333,9 @@ function appendBotMessage(botText) {
     
     const botHTML = `
         <div class="message-row bot">
-            <div class="avatar">🤖</div>
+            <div class="avatar sia-avatar">
+    <img src="/static/Chatbot.png" alt="SIA">
+</div>
             <div class="message-content">
                 <div class="bubble">${botText.replace(/\*/g, "")}</div>
                 <span class="time">${getCurrentTime()}</span>
@@ -341,6 +343,12 @@ function appendBotMessage(botText) {
         </div>
     `;
     chatHistory.insertAdjacentHTML('beforeend', botHTML);
+    const avatar = chatHistory.lastElementChild.querySelector(".sia-avatar");
+avatar.classList.add("speaking");
+
+setTimeout(() => {
+    avatar.classList.remove("speaking");
+}, 1800);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
 

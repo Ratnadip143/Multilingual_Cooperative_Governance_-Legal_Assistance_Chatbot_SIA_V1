@@ -131,10 +131,7 @@ body {
 
 /* Robot */
 .robot-container {
-    z-index: 5;
-    margin-right: 20px;
-    margin-top: 50px;
-    
+    position: relative;
 }
 
 .sticker-effect {
@@ -153,11 +150,6 @@ body {
     transform: rotate(-2deg);
 }
 
-.robot-image {
-    max-width: 400px;
-    height: auto;
-    filter: drop-shadow(0px 20px 15px rgba(0,0,0,0.15));
-}
 
 /* Speech Bubble */
 .speech-bubble {
@@ -482,4 +474,145 @@ body {
         opacity: 0;
         transform: scale(1.03);
     }
+}
+
+/* =========================================
+   SIA ANIMATED ROBOT
+   ========================================= */
+
+
+/* Robot face overlay */
+.sia-face {
+    position: absolute;
+
+    width: 35%;
+    height: 21%;
+
+    left: 62%;
+    top: 38%;
+
+    transform: translate(-50%, -50%);
+
+    z-index: 5;
+
+    background: #06120f;
+    border: none;
+    box-shadow: none;
+
+    border-radius: 55% 45%;
+
+    pointer-events: none;
+}
+/* Eyes */
+.sia-eyes {
+    position: absolute;
+    top: 36%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 62%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.eye {
+    width: 24px;
+    height: 12px;
+
+    border-top: 5px solid #65ffb0;
+    border-radius: 50%;
+
+    filter: drop-shadow(0 0 6px #45ff9a);
+
+    transition: all 0.2s ease;
+}
+
+/* Happy eyes */
+.left-eye,
+.right-eye {
+    transform: rotate(0deg);
+}
+
+/* Mouth */
+.sia-mouth {
+    position: absolute;
+
+    top: 58%;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    width: 30px;
+    height: 14px;
+
+    border-bottom: 5px solid #65ffb0;
+    border-radius: 0 0 50% 50%;
+
+    filter: drop-shadow(0 0 6px #45ff9a);
+
+    transition: all 0.15s ease;
+}
+
+
+/* =========================================================
+   TALKING ANIMATION
+   ========================================================= */
+
+.sia-face.speaking .eye {
+    animation: siaBlink 2.4s infinite ease-in-out;
+}
+
+.sia-face.speaking .sia-mouth {
+    animation: siaTalk 0.22s infinite alternate ease-in-out;
+}
+
+
+/* Eyes blink */
+@keyframes siaBlink {
+
+    0%, 45%, 100% {
+        transform: scaleY(1);
+    }
+
+    48%, 52% {
+        transform: scaleY(0.15);
+    }
+}
+
+
+/* Mouth talking */
+@keyframes siaTalk {
+
+    0% {
+        width: 25px;
+        height: 7px;
+        border-bottom-width: 4px;
+    }
+
+    100% {
+        width: 34px;
+        height: 20px;
+        border-bottom-width: 6px;
+    }
+}
+
+/* STOP ROBOT MOVEMENT */
+.robot-container {
+    animation: none !important;
+}
+
+.robot-image {
+    animation: none !important;
+    transform: none !important;
+}
+.float-anim,
+.sticker-effect {
+    animation: none !important;
+    transform: none !important;
+}
+.robot-container {
+    transform: scale(0.65);
+    transform-origin: center right;
 }

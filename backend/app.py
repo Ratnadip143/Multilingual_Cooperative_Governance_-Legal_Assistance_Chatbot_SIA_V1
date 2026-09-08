@@ -66,9 +66,22 @@ app.mount(
 
 @app.get("/")
 def serve_frontend():
+    return FileResponse(
+        FRONTEND_DIR / "index.html"
+    )
 
+
+@app.get("/chat.html")
+def serve_chat():
     return FileResponse(
         FRONTEND_DIR / "chat.html"
+    )
+
+
+@app.get("/mail.html")
+def serve_mail():
+    return FileResponse(
+        FRONTEND_DIR / "mail.html"
     )
 
 
