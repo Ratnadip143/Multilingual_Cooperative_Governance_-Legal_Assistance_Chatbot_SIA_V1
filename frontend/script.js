@@ -93,11 +93,15 @@ async function fetchInboxData() {
 // Uncomment the line below when your backend is ready!
 // fetchInboxData(); 
 
-// Handle clicking the inbox button
-document.getElementById('inboxBtn').addEventListener('click', () => {
-    // You would typically open a modal, a sidebar, or navigate to an inbox page here
-    alert("Opening inbox! This is where you display the fetched messages.");
-});
+    // Open the inbox after the existing top-right transition completes.
+    const inboxBtn = document.getElementById('inboxBtn');
+    inboxBtn.addEventListener('click', () => {
+        transitionOverlay.classList.add('expand');
+
+        setTimeout(() => {
+            window.location.href = 'mail.html';
+        }, 700);
+    });
 
     // Translation Dictionary
 const translations = {
@@ -208,5 +212,5 @@ typeBtn.addEventListener('click', () => {
     setTimeout(() => {
         // Replace 'chat.html' with the actual name of your next HTML file
         window.location.href = 'chat.html'; 
-    }, 700); 
+    }, 700);
 });

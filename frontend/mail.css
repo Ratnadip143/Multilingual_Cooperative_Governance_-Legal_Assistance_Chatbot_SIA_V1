@@ -1,0 +1,173 @@
+/* Base Reset and Typography */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+    background-color: #f4f9f5; /* Mid-white/very light green */
+    color: #333;
+    display: flex;
+    justify-content: center;
+    padding: 2rem 1rem;
+    min-height: 100vh;
+}
+
+/* Main Container */
+.inbox-container {
+    width: 100%;
+    max-width: 900px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(34, 139, 34, 0.08);
+    overflow: hidden;
+    border: 1px solid #e1eedd;
+}
+
+/* Header Styling */
+.inbox-header {
+    background-color: #2e7d32; /* Deep Green */
+    color: white;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-title h1 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Controls (Sorting & Buttons) */
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+}
+
+.controls select {
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: 1px solid #a5d6a7;
+    outline: none;
+    background: #ffffff;
+    color: #2e7d32;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.refresh-btn {
+    padding: 0.5rem 1rem;
+    background-color: #4caf50; /* Lighter interactive green */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.refresh-btn:hover {
+    background-color: #43a047;
+}
+
+/* Message List */
+.message-list {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background-color: #fafdfb;
+}
+
+.loading {
+    text-align: center;
+    color: #2e7d32;
+    padding: 2rem;
+    font-style: italic;
+}
+
+/* Individual Message Card */
+.message-card {
+    background: #ffffff;
+    border-left: 5px solid #81c784; /* Soft Green border */
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+    border-top: 1px solid #f0f0f0;
+    border-right: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+    transition: all 0.2s ease-in-out;
+    cursor: pointer;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+}
+
+.message-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(46, 125, 50, 0.1);
+    border-left-color: #2e7d32;
+    background: #f1f8f3;
+}
+
+/* Card Content Details */
+.msg-header {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1b5e20; /* Darkest Green */
+}
+
+.msg-subject {
+    font-size: 0.95rem;
+    color: #444;
+    margin-top: 4px;
+    font-weight: 600;
+}
+
+.msg-date {
+    font-size: 0.85rem;
+    color: #777;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.msg-body {
+    grid-column: 1 / -1;
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.5;
+    display: none; /* Hidden by default */
+}
+
+/* Interactive Expanded State */
+.message-card.expanded {
+    background-color: #f4fcf6;
+    border-left-color: #2e7d32;
+}
+
+.message-card.expanded .msg-body {
+    display: block;
+    margin-top: 15px;
+    border-top: 1px dashed #c8e6c9;
+    padding-top: 15px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .inbox-header { flex-direction: column; align-items: flex-start; }
+    .message-card { grid-template-columns: 1fr; }
+    .msg-date { text-align: left; margin-top: 5px; color: #888; }
+}

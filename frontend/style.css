@@ -411,7 +411,7 @@ body {
 
 
 /* --- Page Transition Overlay --- */
-.page-transition-overlay {
+.page-transition-overlay-1 {
     position: fixed;
     top: 0;
     left: 0;
@@ -436,4 +436,32 @@ body {
     visibility: visible;
     /* Expands the circle to be larger than the screen */
     clip-path: circle(150% at 85% 90%); 
+}
+
+
+/* --- Page Transition Overlay second the  mail--- */
+.page-transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: white;
+    z-index: 9999;
+
+    /* Starts from the top-right element */
+    clip-path: circle(0% at 85% 10%);
+    opacity: 0;
+    visibility: hidden;
+
+    transition: clip-path 0.7s cubic-bezier(0.645, 0.045, 0.355, 1),
+                opacity 0.2s ease-in;
+}
+
+.page-transition-overlay.expand {
+    opacity: 1;
+    visibility: visible;
+
+    /* Expands from the top-right */
+    clip-path: circle(150% at 85% 10%);
 }
