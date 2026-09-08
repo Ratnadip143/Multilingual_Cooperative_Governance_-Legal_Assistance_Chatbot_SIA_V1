@@ -17,7 +17,7 @@ body {
    font-family: 'Poppins', sans-serif;
     
     /* 1. Add your image path inside the quotes */
-    background-image: url('pexels-magic-k-24827758-6729124.jpg'); 
+   background-image: url('/static/BG.jpg');
     
     /* 2. Ensure it covers the whole screen without repeating */
     background-size: cover;
@@ -464,4 +464,22 @@ body {
 
     /* Expands from the top-right */
     clip-path: circle(150% at 85% 10%);
+}
+
+/* Smooth transition from SIA home page to chat */
+.page-exit {
+    animation: pageExit 0.55s ease forwards;
+    pointer-events: none;
+}
+
+@keyframes pageExit {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.03);
+    }
 }
