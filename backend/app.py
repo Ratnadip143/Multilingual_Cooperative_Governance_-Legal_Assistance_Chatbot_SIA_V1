@@ -12,10 +12,7 @@ from sarvamai import SarvamAI
 
 from backend.language_detection import detect_language
 
-from rag.ingest import load_and_chunk_documents
-from rag.embeddings import create_embeddings
-from rag.vectorstore import create_vector_store
-from rag.retrieve import retrieve
+from rag.retrieve import retrieve, load_vector_store
 
 
 # =========================================================
@@ -96,51 +93,25 @@ class QuestionRequest(BaseModel):
 
     language: str = "English"
 
-
 # =========================================================
 # LOAD KNOWLEDGE BASE
 # =========================================================
 
 print("========================================")
-print("Loading knowledge base...")
+print("Loading FAISS knowledge base...")
 print("========================================")
 
+try:
+    vector_store, chunks = load_vector_store()
 
-chunks = load_and_chunk_documents()
+    print("FAISS knowledge base ready.")
+    print("Total vectors:", vector_store.ntotal)
+    print("Total chunks:", len(chunks))
 
-
-print(
-    "Total knowledge base chunks:",
-    len(chunks)
-)
-
-
-if chunks:
-
-    print("Creating embeddings...")
-
-    embeddings = create_embeddings(
-        [chunk["text"] for chunk in chunks]
-    )
-
-
-    print("Creating FAISS vector store...")
-
-    vector_store = create_vector_store(
-        embeddings
-    )
-
-
-    print("Knowledge base ready.")
-
-
-else:
-
+except Exception as e:
+    print("ERROR loading FAISS knowledge base:", e)
     vector_store = None
-
-    print(
-        "WARNING: Knowledge base is empty."
-    )
+    chunks = []
 
 
 # =========================================================
