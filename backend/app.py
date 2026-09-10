@@ -70,6 +70,9 @@ def serve_frontend():
         FRONTEND_DIR / "index.html"
     )
 
+@app.get("/scheme-details.html")
+def serve_scheme_details():
+    return FileResponse(FRONTEND_DIR / "scheme-details.html")
 
 @app.get("/chat.html")
 def serve_chat():
@@ -80,9 +83,7 @@ def serve_chat():
 
 @app.get("/mail.html")
 def serve_mail():
-    return FileResponse(
-        FRONTEND_DIR / "mail.html"
-    )
+    return FileResponse(FRONTEND_DIR / "mail.html")
 
 
 # =========================================================
@@ -784,3 +785,13 @@ Provide ONLY the final answer.
         "sources":
             sources
     }
+    # ==========================================
+# NOTIFICATION / UNREAD MESSAGE ENDPOINT
+# ==========================================
+
+@app.get("/api/messages")
+def get_messages():
+    return {
+    "unreadCount": 0,
+    "messages": []
+}
