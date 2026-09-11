@@ -1,153 +1,542 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>SIA AI Clone</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
-<link rel="stylesheet" href="/static/chat.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <link rel="stylesheet" href="/static/chat.css">
 </head>
+
 <body>
 
     <div class="app-container">
-        <!-- Header -->
+
+        <!-- =========================
+             HEADER
+        ========================== -->
         <header>
+
             <div class="header-left">
-                <div class="logo">SIA</div>
-                <div class="header-titles">
-                    <h1 data-translate="header_title">Cooperative & Government Assistance AI</h1>
-                    <p data-translate="header_subtitle">Your Voice | Your Language | Your Rights | Our Support</p>
-                </div>
-            </div>
-           <div class="header-right">
-    <a href="/" class="home-btn" title="Back to Home">
-    <i class="fa-solid fa-house"></i>
+
+                <!-- BACK BUTTON -->
+                <a href="/"
+   class="back-home-btn"
+   title="Back to Home"
+   aria-label="Back to Home"
+   style="
+       display: inline-flex;
+       align-items: center;
+       justify-content: center;
+       gap: 6px;
+       padding: 8px 16px;
+       background: #075b4f;
+       color: #ffffff;
+       border: 2px solid #007bff;
+       border-radius: 22px;
+       text-decoration: none;
+       font-size: 15px;
+       font-weight: 600;
+       white-space: nowrap;
+       cursor: pointer;
+       box-sizing: border-box;
+   ">
+
+    <i class="fa-solid fa-arrow-left"
+       style="color: #ffffff;">
+    </i>
+
+    <span>Back</span>
+
 </a>
-    <span id="current-date">Loading date...</span>
-    <strong id="current-time">Loading time...</strong>
-    <span id="connection-status" class="connection-status">📶</span>
-    <button id="settings-btn" class="settings-btn" title="Settings">⚙</button>
-</div>
+
+                <!-- SIA LOGO -->
+                <div class="logo">
+                    SIA
+                </div>
+
+                <!-- HEADER TITLES -->
+                <div class="header-titles">
+
+                    <h1 data-translate="header_title">
+                        Cooperative & Government Assistance AI
+                    </h1>
+
+                    <p data-translate="header_subtitle">
+                        Your Voice | Your Language | Your Rights | Our Support
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 HEADER RIGHT
+            ========================== -->
+
+            <div class="header-right">
+
+                <!-- HOME ICON -->
+                <a href="/"
+                   class="home-btn"
+                   title="Home"
+                   aria-label="Home">
+
+                    <i class="fa-solid fa-house"></i>
+
+                </a>
+
+
+                <!-- DATE -->
+                <span id="current-date">
+                    Loading date...
+                </span>
+
+
+                <!-- TIME -->
+                <strong id="current-time">
+                    Loading time...
+                </strong>
+
+
+                <!-- CONNECTION STATUS -->
+                <span id="connection-status"
+                      class="connection-status">
+                    📶
+                </span>
+
+
+                <!-- SETTINGS -->
+                <button id="settings-btn"
+                        class="settings-btn"
+                        title="Settings">
+                    ⚙
+                </button>
+
+            </div>
+
         </header>
 
-        <!-- Main Content -->
+
+        <!-- =========================
+             MAIN CONTENT
+        ========================== -->
+
         <div class="main-content">
-            <!-- Left Chat Area -->
+
+
+            <!-- =========================
+                 LEFT CHAT AREA
+            ========================== -->
+
             <div class="chat-section">
-                <div class="chat-history" id="chat-history">
-                    
-                    <!-- Bot Message 1 -->
+
+                <div class="chat-history"
+                     id="chat-history">
+
+
+                    <!-- BOT MESSAGE -->
                     <div class="message-row bot">
+
                         <div class="avatar">
-    <img src="/static/Chatbot.png" alt="SIA">
-</div>
+
+                            <img src="/static/Chatbot.png"
+                                 alt="SIA">
+
+                        </div>
+
+
                         <div class="message-content">
-                            <div class="bubble" data-translate="bot_intro">
-                                <strong>Namaste!</strong><br>
-                                I am SIA, your cooperative and government assistance AI.<br>
+
+                            <div class="bubble"
+                                 data-translate="bot_intro">
+
+                                <strong>
+                                    Namaste!
+                                </strong>
+
+                                <br>
+
+                                I am SIA, your cooperative and
+                                government assistance AI.
+
+                                <br>
+
                                 How can I help you today?
+
                             </div>
-                            <span class="message-time" id="initial-message-time"></span>
+
+
+                            <span class="message-time"
+                                  id="initial-message-time">
+                            </span>
+
+
+                            <!-- SUGGESTIONS -->
                             <div class="suggestions">
-                                <button class="chip chip-green" data-translate="chip_find">Find Schemes</button>
-                                <button class="chip chip-blue" data-translate="chip_eligibility">Check Eligibility</button>
-                                <button class="chip chip-yellow" data-translate="chip_laws">Cooperative Laws</button>
-                                <button class="chip chip-purple" data-translate="chip_apply">How to Apply?</button>
+
+                                <button class="chip chip-green"
+                                        data-translate="chip_find">
+                                    Find Schemes
+                                </button>
+
+                                <button class="chip chip-blue"
+                                        data-translate="chip_eligibility">
+                                    Check Eligibility
+                                </button>
+
+                                <button class="chip chip-yellow"
+                                        data-translate="chip_laws">
+                                    Cooperative Laws
+                                </button>
+
+                                <button class="chip chip-purple"
+                                        data-translate="chip_apply">
+                                    How to Apply?
+                                </button>
+
                             </div>
+
                         </div>
+
                     </div>
 
+                </div>
 
-</div>
-                <!-- Input Area -->
+
+                <!-- =========================
+                     INPUT AREA
+                ========================== -->
+
                 <div class="input-area">
+
                     <div class="input-box">
-                        <span style="color: #999;">⌨️</span>
-                        <!-- Notice the data-translate-placeholder attribute -->
-                        <input type="text" id="chat-input" data-translate-placeholder="input_placeholder" placeholder="Type your message here..." autocomplete="off">
-                        <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
+
+                        <span style="color: #999;">
+                            ⌨️
+                        </span>
+
+
+                        <input type="text"
+                               id="chat-input"
+                               data-translate-placeholder="input_placeholder"
+                               placeholder="Type your message here..."
+                               autocomplete="off">
+
+
+                        <button class="send-btn"
+                                id="send-btn"
+                                onclick="sendMessage()">
+
+                            ➤
+
+                        </button>
+
                     </div>
-                    <div style="text-align: center; margin-top: 10px; font-size: 11px; color: #999;" data-translate="input_hint">
-                        You can speak in Hindi, English, Punjabi or your preferred language.
+
+
+                    <div style="
+                        text-align: center;
+                        margin-top: 10px;
+                        font-size: 11px;
+                        color: #999;
+                    "
+                    data-translate="input_hint">
+
+                        You can speak in Hindi, English,
+                        Punjabi or your preferred language.
+
                     </div>
+
                 </div>
+
             </div>
 
-            <!-- Right Sidebar Area -->
+
+
+            <!-- =========================
+                 RIGHT SIDEBAR
+            ========================== -->
+
             <div class="sidebar-section">
-                
-                <!-- Alert Box -->
+
+
+                <!-- =========================
+                     ALERT BOX
+                ========================== -->
+
                 <div class="alert-card">
+
                     <div class="alert-header">
-                        <span data-translate="alert_title">🔔 New Scheme Alert</span>
-                        <span class="badge" data-translate="alert_badge">New</span>
+
+                        <span data-translate="alert_title">
+                            🔔 New Scheme Alert
+                        </span>
+
+                        <span class="badge"
+                              data-translate="alert_badge">
+                            New
+                        </span>
+
                     </div>
-                    <h3 data-translate="alert_heading">Integrated Cooperative Development Scheme 2026</h3>
-                    <p data-translate="alert_desc">A new scheme has been launched for strengthening cooperative societies.</p>
-                    <a href="scheme-details.html" class="view-detail" data-translate="alert_link">
-    View Details →
-</a>
+
+
+                    <h3 data-translate="alert_heading">
+                        Integrated Cooperative Development Scheme 2026
+                    </h3>
+
+
+                    <p data-translate="alert_desc">
+                        A new scheme has been launched for
+                        strengthening cooperative societies.
+                    </p>
+
+
+                    <a href="scheme-details.html"
+                       class="view-detail"
+                       data-translate="alert_link">
+
+                        View Details →
+
+                    </a>
+
                 </div>
 
-                <!-- Quick Actions -->
+
+
+                <!-- =========================
+                     QUICK ACTIONS
+                ========================== -->
+
                 <div>
-                    <div class="section-title" data-translate="qa_title">⚡ Quick Actions</div>
+
+                    <div class="section-title"
+                         data-translate="qa_title">
+
+                        ⚡ Quick Actions
+
+                    </div>
+
+
                     <div class="actions-grid">
-                        <a href="#" class="action-card card-green">
-                            <h4 data-translate="qa_find_title">🔍 Find Schemes</h4>
-                            <p data-translate="qa_find_desc">Search government schemes</p>
+
+
+                        <a href="#"
+                           class="action-card card-green">
+
+                            <h4 data-translate="qa_find_title">
+                                🔍 Find Schemes
+                            </h4>
+
+                            <p data-translate="qa_find_desc">
+                                Search government schemes
+                            </p>
+
                         </a>
-                        <a href="#" class="action-card card-blue">
-                            <h4 data-translate="qa_eligibility_title">📄 Check Eligibility</h4>
-                            <p data-translate="qa_eligibility_desc">See if you are eligible</p>
+
+
+                        <a href="#"
+                           class="action-card card-blue">
+
+                            <h4 data-translate="qa_eligibility_title">
+                                📄 Check Eligibility
+                            </h4>
+
+                            <p data-translate="qa_eligibility_desc">
+                                See if you are eligible
+                            </p>
+
                         </a>
-                        <a href="#" class="action-card card-yellow">
-                            <h4 data-translate="qa_apply_title">❓ How to Apply?</h4>
-                            <p data-translate="qa_apply_desc">Step-by-step guide</p>
+
+
+                        <a href="#"
+                           class="action-card card-yellow">
+
+                            <h4 data-translate="qa_apply_title">
+                                ❓ How to Apply?
+                            </h4>
+
+                            <p data-translate="qa_apply_desc">
+                                Step-by-step guide
+                            </p>
+
                         </a>
-                        <a href="#" class="action-card card-purple">
-                            <h4 data-translate="qa_pacs_title">👥 PACS Support</h4>
-                            <p data-translate="qa_pacs_desc">Get help for PACS</p>
+
+
+                        <a href="#"
+                           class="action-card card-purple">
+
+                            <h4 data-translate="qa_pacs_title">
+                                👥 PACS Support
+                            </h4>
+
+                            <p data-translate="qa_pacs_desc">
+                                Get help for PACS
+                            </p>
+
                         </a>
-                        <a href="#" class="action-card card-red">
-                            <h4 data-translate="qa_laws_title">⚖️ Cooperative Laws</h4>
-                            <p data-translate="qa_laws_desc">Know your rights</p>
+
+
+                        <a href="#"
+                           class="action-card card-red">
+
+                            <h4 data-translate="qa_laws_title">
+                                ⚖️ Cooperative Laws
+                            </h4>
+
+                            <p data-translate="qa_laws_desc">
+                                Know your rights
+                            </p>
+
                         </a>
-                        <a href="#" class="action-card card-teal">
-                            <h4 data-translate="qa_faq_title">📖 FAQs</h4>
-                            <p data-translate="qa_faq_desc">Common questions</p>
+
+
+                        <a href="#"
+                           class="action-card card-teal">
+
+                            <h4 data-translate="qa_faq_title">
+                                📖 FAQs
+                            </h4>
+
+                            <p data-translate="qa_faq_desc">
+                                Common questions
+                            </p>
+
                         </a>
+
                     </div>
+
                 </div>
 
-                <!-- Language Selection -->
+
+
+                <!-- =========================
+                     LANGUAGE SELECTION
+                ========================== -->
+
                 <div>
-                    <div class="section-title" data-translate="lang_title">🌐 Language / भाषा</div>
-                    <div class="lang-options">
-                        <button class="lang-btn active" data-lang="en">English</button>
-                    <button class="lang-btn" data-lang="hi">हिन्दी</button>
-                    <button class="lang-btn" data-lang="pa">ਪੰਜਾਬੀ</button>
-                    
-                    <div class="dropdown">
-                        <button class="lang-btn dropbtn" id="more-lang-btn">More ▾</button>
-                        <div class="dropdown-content" id="more-dropdown">
-                            <button class="lang-btn dropdown-item" data-lang="bn">বাংলা (Bengali)</button>
-                            <button class="lang-btn dropdown-item" data-lang="ta">தமிழ் (Tamil)</button>
-                            <button class="lang-btn dropdown-item" data-lang="mr">मराठी (Marathi)</button>
-                        </div>
+
+                    <div class="section-title"
+                         data-translate="lang_title">
+
+                        🌐 Language / भाषा
+
                     </div>
+
+
+                    <div class="lang-options">
+
+                        <button class="lang-btn active"
+                                data-lang="en">
+                            English
+                        </button>
+
+
+                        <button class="lang-btn"
+                                data-lang="hi">
+                            हिन्दी
+                        </button>
+
+
+                        <button class="lang-btn"
+                                data-lang="pa">
+                            ਪੰਜਾਬੀ
+                        </button>
+
+
+                        <!-- MORE LANGUAGES -->
+
+                        <div class="dropdown">
+
+                            <button class="lang-btn dropbtn"
+                                    id="more-lang-btn">
+
+                                More ▾
+
+                            </button>
+
+
+                            <div class="dropdown-content"
+                                 id="more-dropdown">
+
+
+                                <button class="lang-btn dropdown-item"
+                                        data-lang="bn">
+
+                                    বাংলা (Bengali)
+
+                                </button>
+
+
+                                <button class="lang-btn dropdown-item"
+                                        data-lang="ta">
+
+                                    தமிழ் (Tamil)
+
+                                </button>
+
+
+                                <button class="lang-btn dropdown-item"
+                                        data-lang="mr">
+
+                                    मराठी (Marathi)
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
 
-                                <!-- Footer -->
+
+
+                <!-- =========================
+                     FOOTER
+                ========================== -->
+
                 <div class="sidebar-footer">
-                    <div style="font-size: 40px; margin-bottom: -15px;">🌱🧑‍🌾</div>
-                    <p data-translate="footer_quote">"Cooperatives Build a Better Tomorrow"</p>
+
+                    <div style="
+                        font-size: 40px;
+                        margin-bottom: -15px;
+                    ">
+
+                        🌱🧑‍🌾
+
+                    </div>
+
+
+                    <p data-translate="footer_quote">
+
+                        "Cooperatives Build a Better Tomorrow"
+
+                    </p>
+
                 </div>
+
 
             </div>
+
         </div>
+
     </div>
 
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
     <script src="/static/chat.js"></script>
+
 </body>
+
 </html>
