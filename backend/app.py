@@ -637,7 +637,9 @@ USER QUESTION:
 Provide ONLY the final answer.
 
 FORMAT RULES:
-- When the answer contains multiple points, first give one short introductory sentence, then list the points.
+- When the answer contains multiple points, write one short introductory sentence on its own line first.
+- The introductory sentence must NOT be numbered.
+- Start numbering only the actual points, using 1., 2., 3., etc.
 - Answer in clear numbered points whenever listing information.
 - Use this format: 1. ..., 2. ..., 3. ...
 - Put each point on a separate line.
