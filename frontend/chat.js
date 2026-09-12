@@ -330,14 +330,19 @@ appendBotMessage(data.answer);
 
 function appendBotMessage(botText) {
     if (!chatHistory) return;
-    
+
+    const formattedText = botText
+    .trim()
+    .replace(/\n{2,}/g, '\n')
+    .replace(/\n/g, '<br>');
+
     const botHTML = `
         <div class="message-row bot">
             <div class="avatar sia-avatar">
     <img src="/static/Chatbot.png" alt="SIA">
 </div>
             <div class="message-content">
-                <div class="bubble">${botText.replace(/\*/g, "")}</div>
+                <div class="bubble">${formattedText}</div>
                 <span class="time">${getCurrentTime()}</span>
             </div>
         </div>

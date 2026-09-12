@@ -635,6 +635,13 @@ USER QUESTION:
 {request.question}
 
 Provide ONLY the final answer.
+
+FORMAT RULES:
+- Answer in clear numbered points whenever listing information.
+- Use this format: 1. ..., 2. ..., 3. ...
+- Put each point on a separate line.
+- Do not combine multiple services or facts into one paragraph.
+- Keep the answer simple and easy to understand.
 """
 
 

@@ -580,3 +580,6 @@ body {
 .back-home-btn:hover i {
     color: #ffffff !important;
 }
+.bubble {
+    white-space: normal;
+}
