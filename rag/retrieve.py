@@ -41,11 +41,13 @@ def retrieve(query, vector_store, documents, top_k=3):
     if vector_store is None or not documents:
         return []
 
-    # --------------------------------------------------
-    # 1. Normalize the query
-    # --------------------------------------------------
+    # ==================================================
+    # 1. NORMALIZE QUERY
+    # ==================================================
 
-    clean_query = " ".join(str(query).strip().split())
+    clean_query = " ".join(
+        str(query).strip().split()
+    )
 
     clean_query = (
         clean_query
@@ -53,20 +55,23 @@ def retrieve(query, vector_store, documents, top_k=3):
         .replace("!", "")
         .replace(",", "")
         .replace(".", "")
+        .replace(":", "")
+        .replace(";", "")
         .strip()
     )
 
     query_lower = clean_query.lower()
 
-    # --------------------------------------------------
-    # 2. Improve short PACS queries
-    # --------------------------------------------------
+    # ==================================================
+    # 2. IMPROVE PACS QUERIES
+    # ==================================================
 
     if query_lower == "pacs":
 
         clean_query = (
             "PACS Primary Agricultural Credit Society "
-            "cooperative society"
+            "cooperative society "
+            "Primary Agricultural Credit Societies"
         )
 
     elif "pacs" in query_lower:
@@ -74,63 +79,109 @@ def retrieve(query, vector_store, documents, top_k=3):
         clean_query = (
             clean_query
             + " Primary Agricultural Credit Society "
-            "cooperative society"
+            "Primary Agricultural Credit Societies "
+            "PACS cooperative society"
         )
 
-    # --------------------------------------------------
-    # 3. Improve eligibility queries
-    # --------------------------------------------------
+    # ==================================================
+    # 3. IMPROVE ELIGIBILITY / MEMBERSHIP QUERIES
+    # ==================================================
 
     eligibility_words = [
-    "eligibility",
-    "eligible",
-    "eligibility criteria",
-    "qualify",
-    "qualified",
-    "qualification",
-    "who can apply",
-    "who is eligible",
-    "who is able to apply",
-    "who can enroll",
-    "who is allowed to apply",
-    "can i apply",
-    "can i enroll",
-    "am i eligible",
-    "am i allowed",
-    "requirements to apply",
-    "requirements for applying"
-]
+        "eligibility",
+        "eligible",
+        "qualify",
+        "qualified",
+        "qualification",
+        "eligibility criteria",
 
-    if any(word in query_lower for word in eligibility_words):
+        "who can apply",
+        "who is eligible",
+        "who is eligible to become a member",
+
+        "who can become a member",
+        "who can be a member",
+        "who can join",
+
+        "membership",
+        "member eligibility",
+        "membership criteria",
+        "membership requirements",
+
+        "requirements for membership",
+        "requirements to join",
+
+        "can i become a member",
+        "can i join"
+    ]
+
+    is_eligibility_query = any(
+        word in query_lower
+        for word in eligibility_words
+    )
+
+    if is_eligibility_query:
 
         clean_query += (
-            " eligibility eligible requirements "
-            "who can apply qualification documents application"
+            " membership "
+            "membership rules "
+            "types of membership "
+            "admission to membership "
+            "eligibility for membership "
+            "membership eligibility "
+            "membership criteria "
+            "membership requirements "
+            "who can become a member "
+            "who can join "
+            "A class membership "
+            "B class members "
+            "eligible persons "
+            "CHAPTER III MEMBERSHIP "
+            "MEMBERSHIP "
+            "ELIGIBILITY FOR A CLASS MEMBERSHIP"
         )
 
-    # --------------------------------------------------
-    # 4. Create query embedding
-    # --------------------------------------------------
+    # ==================================================
+    # 4. SPECIAL PACS MEMBERSHIP QUERY BOOST
+    # ==================================================
 
-    query_embedding = create_embedding(clean_query)
+    if (
+        "pacs" in query_lower
+        and is_eligibility_query
+    ):
+
+        clean_query += (
+            " PACS membership "
+            "PACS member "
+            "Primary Agricultural Credit Society membership "
+            "cooperative society membership"
+        )
+
+    # ==================================================
+    # 5. CREATE QUERY EMBEDDING
+    # ==================================================
+
+    query_embedding = create_embedding(
+        clean_query
+    )
 
     query_embedding = np.asarray(
         [query_embedding],
         dtype="float32"
     )
 
-    # --------------------------------------------------
-    # 5. Search FAISS
-    # --------------------------------------------------
+    # ==================================================
+    # 6. SEARCH FAISS
+    # ==================================================
 
     distances, indices = vector_store.search(
         query_embedding,
         top_k
     )
 
-    # --------------------------------------------------
-    # 6. Build results
-    # --------------------------------------------------
+    # ==================================================
+    # 7. BUILD RESULTS
+    # ==================================================
 
     results = []
 
@@ -143,15 +194,61 @@ def retrieve(query, vector_store, documents, top_k=3):
 
             result = documents[index].copy()
 
-            result["similarity"] = float(distance)
+            result["similarity"] = float(
+                distance
+            )
 
             results.append(result)
+
+    # ==================================================
+    # 8. MEMBERSHIP-SPECIFIC RERANKING
+    # ==================================================
+
+    if (
+        "pacs" in query_lower
+        and is_eligibility_query
+        and results
+    ):
+
+        membership_terms = [
+            "membership",
+            "member",
+            "eligibility for",
+            "a class membership",
+            "b class members",
+            "chapter iii",
+            "admission"
+        ]
+
+        def membership_score(result):
+
+            text = result.get(
+                "text",
+                ""
+            ).lower()
+
+            score = result.get(
+                "similarity",
+                0
+            )
+
+            for term in membership_terms:
+
+                if term in text:
+                    score += 0.08
+
+            return score
+
+        results.sort(
+            key=membership_score,
+            reverse=True
+        )
 
     return results
 
 
-def test_retrieval():
-    """Test FAISS retrieval with a sample cooperative question."""
+def test_queries():
+    """Test important PACS retrieval queries."""
 
     print("\nLoading FAISS index...")
 
@@ -167,67 +264,70 @@ def test_retrieval():
         f"{len(documents)}"
     )
 
-    query = (
-        "What is a Primary Agricultural "
-        "Credit Society (PACS)?"
-    )
+    test_questions = [
+        "PACS",
+        "PACS?",
+        "What is PACS?",
+        "Who can become a member of PACS?",
+        "What are the eligibility criteria for PACS membership?",
+        "Who can join PACS?",
+        "What are the requirements to become a PACS member?"
+    ]
 
-    print(f"\nQuery: {query}")
-    print("\nSearching...\n")
+    for query in test_questions:
 
-    results = retrieve(
-        query,
-        vector_store,
-        documents,
-        top_k=3
-    )
+        print("\n" + "=" * 80)
+        print(f"QUERY: {query}")
+        print("=" * 80)
 
-    if not results:
-
-        print("No results found.")
-
-        return
-
-    for i, result in enumerate(
-        results,
-        start=1
-    ):
-
-        print("=" * 70)
-
-        print(f"RESULT {i}")
-
-        print("=" * 70)
-
-        print(
-            f"Similarity: "
-            f"{result.get('similarity', 0):.4f}"
+        results = retrieve(
+            query,
+            vector_store,
+            documents,
+            top_k=3
         )
 
-        print(
-            f"Document: "
-            f"{result.get('document', 'Unknown')}"
-        )
+        if not results:
 
-        print(
-            f"Source: "
-            f"{result.get('source', 'Unknown')}"
-        )
+            print("NO RESULTS")
+            continue
 
-        print(
-            f"Page: "
-            f"{result.get('page', 'N/A')}"
-        )
+        for i, result in enumerate(
+            results,
+            start=1
+        ):
 
-        print("\nText:")
+            print(
+                f"\nRESULT {i}"
+            )
 
-        print(
-            result.get("text", "")[:1000]
-        )
+            print(
+                f"Similarity: "
+                f"{result.get('similarity', 0):.4f}"
+            )
 
-        print()
+            print(
+                f"Source: "
+                f"{result.get('source', 'Unknown')}"
+            )
+
+            print(
+                f"Page: "
+                f"{result.get('page', 'N/A')}"
+            )
+
+            print(
+                "\nText:"
+            )
+
+            print(
+                result.get(
+                    "text",
+                    ""
+                )[:700]
+            )
 
 
 if __name__ == "__main__":
 
-    test_retrieval()
+    test_queries()
