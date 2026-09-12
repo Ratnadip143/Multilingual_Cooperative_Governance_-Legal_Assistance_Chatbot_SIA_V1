@@ -1,3 +1,19 @@
+// Sets the --origin-x / --origin-y custom properties on the transition
+// overlay to the exact center of the element that triggered the
+// transition, so the expanding circle always starts from that element -
+// no matter where it is on screen or how the viewport is sized.
+function setTransitionOrigin(overlayEl, triggerEl) {
+    const rect = triggerEl.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const xPercent = (centerX / window.innerWidth) * 100;
+    const yPercent = (centerY / window.innerHeight) * 100;
+
+    overlayEl.style.setProperty('--origin-x', `${xPercent}%`);
+    overlayEl.style.setProperty('--origin-y', `${yPercent}%`);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     const micButton = document.getElementById('micButton');
     const voiceControl = document.querySelector('.voice-control');
@@ -94,9 +110,11 @@ async function fetchInboxData() {
 // fetchInboxData(); 
 
     // Open the inbox after the existing top-right transition completes.
+        // Open the inbox after the existing top-right transition completes.
     const inboxBtn = document.getElementById('inboxBtn');
     inboxBtn.addEventListener('click', () => {
-        transitionOverlay.classList.add('expand');
+        setTransitionOrigin(transitionOverlay, inboxBtn);
+        transitionOverlay.classList.add('expand');   // ✅ new
 
         setTimeout(() => {
             window.location.href = 'mail.html';
@@ -205,7 +223,9 @@ const typeBtn = document.getElementById('typeBtn');
 const transitionOverlay = document.getElementById('transitionOverlay');
 
 typeBtn.addEventListener('click', () => {
-    // 1. Start the white expansion animation
+    // 1. Compute the origin from the button's actual position, then start
+    //    the white expansion animation from that exact point
+    setTransitionOrigin(transitionOverlay, typeBtn);
     transitionOverlay.classList.add('expand');
     
     // 2. Wait for the animation to finish (700 milliseconds), then change the page
@@ -213,4 +233,20 @@ typeBtn.addEventListener('click', () => {
         // Replace 'chat.html' with the actual name of your next HTML file
         window.location.href = 'chat.html'; 
     }, 700);
+});
+
+// --- Mic Button Transition ---
+const micButton = document.getElementById('micButton');
+
+micButton.addEventListener('click', () => {
+    // 1. Compute the origin from the mic button's actual position, then
+    //    apply the black expansion classes
+    setTransitionOrigin(transitionOverlay, micButton);
+    transitionOverlay.className = 'page-transition-overlay origin-mic expand-mic';
+    
+    // 2. Wait 700ms for the animation, then load the new page
+    setTimeout(() => {
+        // Replace 'voice.html' with your actual voice assistant HTML file
+        window.location.href = 'face.html'; 
+    }, 700); 
 });

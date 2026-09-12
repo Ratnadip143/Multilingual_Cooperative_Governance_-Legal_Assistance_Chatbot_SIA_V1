@@ -411,49 +411,24 @@ body {
 
 
 /* --- Page Transition Overlay --- */
-.page-transition-overlay-1 {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background-color: white; /* The color it flashes to */
-    z-index: 9999; /* Keeps it above absolutely everything */
-    
-    /* Starts hidden as a tiny circle near the bottom right button */
-    clip-path: circle(0% at 85% 90%); 
-    opacity: 0;
-    visibility: hidden;
-    
-    /* The smooth animation timing */
-    transition: clip-path 0.7s cubic-bezier(0.645, 0.045, 0.355, 1), 
-                opacity 0.2s ease-in;
-}
-
-/* This class is added by JavaScript when the button is clicked */
-.page-transition-overlay.expand {
-    opacity: 1;
-    visibility: visible;
-    /* Expands the circle to be larger than the screen */
-    clip-path: circle(150% at 85% 90%); 
-}
-
-
-/* --- Page Transition Overlay second the  mail--- */
+/*
+   The origin of the expanding circle is controlled by two CSS custom
+   properties, --origin-x and --origin-y. These are set dynamically via
+   JavaScript (using the triggering element's getBoundingClientRect())
+   right before the "expand" class is added, so the circle always grows
+   outward from whichever button was actually clicked - wherever it is
+   on screen, at any viewport size. The 50% fallback values below are
+   only used if, for some reason, JS hasn't set the variables yet.
+*/
 .page-transition-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
     background-color: white;
     z-index: 9999;
-
-    /* Starts from the top-right element */
-    clip-path: circle(0% at 85% 10%);
     opacity: 0;
     visibility: hidden;
-
+    clip-path: circle(0% at var(--origin-x, 50%) var(--origin-y, 50%)); /* dynamic origin */
     transition: clip-path 0.7s cubic-bezier(0.645, 0.045, 0.355, 1),
                 opacity 0.2s ease-in;
 }
@@ -461,7 +436,19 @@ body {
 .page-transition-overlay.expand {
     opacity: 1;
     visibility: visible;
+    clip-path: circle(150% at var(--origin-x, 50%) var(--origin-y, 50%));
+}
 
-    /* Expands from the top-right */
-    clip-path: circle(150% at 85% 10%);
+/* 3. Mic Button Animation (Black Background, origin follows the mic button) */
+.origin-mic {
+    clip-path: circle(0% at var(--origin-x, 50%) var(--origin-y, 90%));
+    background-color: black;
+}
+
+.expand-mic {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+    clip-path: circle(150% at var(--origin-x, 50%) var(--origin-y, 90%));
+    background-color: black;
 }
