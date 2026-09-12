@@ -1,7 +1,7 @@
 from pathlib import Path
 import re
 
-import pymupdf# PyMuPDF
+import pymupdf  # PyMuPDF
 
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
