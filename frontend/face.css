@@ -1,0 +1,149 @@
+/* ============================================================
+   AI Assistant Face — layout, styling, transitions, animations
+   ============================================================ */
+
+:root{
+  --bg-0: #05070a;
+  --bg-1: #0a0d12;
+  --ink: #f4f6f8;
+  --ink-dim: rgba(244, 246, 248, 0.38);
+  --glow-strong: rgba(230, 238, 245, 0.65);
+  --glow-soft: rgba(230, 238, 245, 0.28);
+  --eye-size: clamp(64px, 13vw, 150px);
+  --eye-gap: clamp(40px, 10vw, 110px);
+  --eye-radius: 10%;
+  --face-shift-y: 0px;
+  --face-shift-x: 0px;
+  --face-brightness: 1;
+  --transition-mech: cubic-bezier(0.62, 0.04, 0.32, 1);
+}
+
+*{
+  box-sizing: border-box;
+}
+
+html, body{
+  height: 100%;
+  margin: 0;
+}
+
+body{
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 42%, var(--bg-1) 0%, var(--bg-0) 70%);
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.scene{
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ---------------- Face ---------------- */
+
+.face{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(28px, 7vh, 64px);
+  transform: translate(var(--face-shift-x), var(--face-shift-y));
+  filter: brightness(var(--face-brightness));
+  transition:
+    transform 0.9s var(--transition-mech),
+    filter 1.4s ease;
+}
+
+/* ---------------- Eyes ---------------- */
+
+.eyes{
+  display: flex;
+  gap: var(--eye-gap);
+  transform: translate(var(--look-x, 0px), var(--look-y, 0px));
+  transition: transform 1.1s cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+.eye{
+  width: var(--eye-size);
+  height: var(--eye-size);
+  --eye-squint: 1;
+  transform: scaleY(var(--eye-squint));
+  transform-origin: center;
+  transition: transform 1.5s cubic-bezier(0.45, 0, 0.2, 1);
+}
+
+.eye-fill{
+  width: 100%;
+  height: 100%;
+  background: var(--ink);
+  border-radius: var(--eye-radius);
+  box-shadow:
+    0 0 18px var(--glow-soft),
+    0 0 3px var(--glow-strong);
+  transform: scaleY(1);
+  transform-origin: center;
+  transition:
+    transform 0.16s var(--transition-mech),
+    box-shadow 0.8s ease;
+}
+
+/* thin closed line — used for startup + blinking */
+.eye-fill.shut{
+  transform: scaleY(0.045);
+}
+
+/* opening sequence uses a slower, more mechanical timing */
+.face[data-state="starting"] .eye-fill{
+  transition:
+    transform 1.1s cubic-bezier(0.16, 0.9, 0.2, 1),
+    box-shadow 0.8s ease;
+}
+
+/* bored eyes: slightly dimmer glow while squinted into a rectangle */
+.face[data-state="bored"] .eye-fill{
+  box-shadow:
+    0 0 10px rgba(230, 238, 245, 0.14),
+    0 0 2px rgba(230, 238, 245, 0.3);
+}
+
+.face[data-state="speaking"] .eye-fill{
+  box-shadow:
+    0 0 26px var(--glow-strong),
+    0 0 5px var(--ink);
+}
+
+/* ---------------- Mouth ---------------- */
+
+.mouth-wrap{
+  width: clamp(200px, 36vw, 420px);
+  height: clamp(60px, 12vw, 120px);
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.face[data-state="starting"] .mouth-wrap.visible,
+.mouth-wrap.visible{
+  opacity: 1;
+}
+
+#mouthCanvas{
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------------- Responsive guardrails ---------------- */
+
+@media (max-width: 420px){
+  :root{
+    --eye-gap: clamp(20px, 8vw, 40px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .face, .eyes, .eye{
+    transition-duration: 0.01ms !important;
+  }
+}
