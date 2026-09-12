@@ -637,6 +637,7 @@ USER QUESTION:
 Provide ONLY the final answer.
 
 FORMAT RULES:
+- When the answer contains multiple points, first give one short introductory sentence, then list the points.
 - Answer in clear numbered points whenever listing information.
 - Use this format: 1. ..., 2. ..., 3. ...
 - Put each point on a separate line.
