@@ -1,7 +1,7 @@
 from pathlib import Path
 import re
 
-import pymupdf  # PyMuPDF
+import fitz  # PyMuPDF
 
 
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
@@ -26,7 +26,7 @@ def extract_pdf(file_path):
 
     documents = []
 
-    pdf = pymupdf.open(file_path)
+    pdf = fitz.open(file_path)
 
     for page_number, page in enumerate(pdf, start=1):
         text = page.get_text("text")
@@ -91,24 +91,8 @@ def load_documents():
 
     return documents
 
-def is_useful_text(text):
-    text = text.strip()
 
-    if len(text) < 40:
-        return False
-
-    letters = sum(char.isalpha() for char in text)
-    digits = sum(char.isdigit() for char in text)
-
-    if letters < 20:
-        return False
-
-    if digits > letters * 3:
-        return False
-
-    return True
-
-def chunk_text(text, chunk_size=300, overlap=50):    
+def chunk_text(text, chunk_size=500, overlap=50):
     """Split text into overlapping word-based chunks."""
 
     words = text.split()
@@ -123,7 +107,7 @@ def chunk_text(text, chunk_size=300, overlap=50):
 
         chunk = " ".join(words[start:end])
 
-        if is_useful_text(chunk):
+        if chunk.strip():
             chunks.append(chunk)
 
         if end == len(words):
