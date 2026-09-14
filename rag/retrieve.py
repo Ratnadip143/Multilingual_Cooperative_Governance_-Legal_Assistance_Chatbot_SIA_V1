@@ -7,57 +7,6 @@ import numpy as np
 from .embeddings import create_embedding
 
 
-SHORT_QUERY_MAP = {
-
-    "HOW CAN I CLAIM FOR CROP INSURANCE": "How do I report crop loss and claim crop insurance under PMFBY? Crop Insurance App KRPH 14447 loss intimation claim assessment",
-    "पीक विम्यसाठी मी कसा अर्ज करू?": "How can I apply for crop insurance under PMFBY? Farmer enrolment application NCIP Aadhaar mobile CSC bank",
-    "WHERE CAN I CHECK THE LIST OF ACTIVE SCHEME": "Official PACS Related Schemes Ministry of Cooperation Government of India list of schemes",
-    "WHAT IS THE PREMIUM RATE OF KHARIF CROP": "What is the farmer premium rate for Kharif crops under PMFBY? Kharif crop insurance premium 2% of Sum Insured",
-        # PACS definition
-    "पैक्स क्या है?": "What is PACS?",
-    "पैक्‍स क्या है?": "What is PACS?",
-    "ਪੈਕਸ ਕੀ ਹੈ": "What is PACS?",
-    "ਪੈਕਸ ਕੀ ਹੈ?": "What is PACS?",
-    "প্যাক্স কী?": "What is PACS?",
-        # PACS membership
-    "मै  पैक्स का सदस्य कैसे बन सकता हु": "How can I become a member of PACS?",
-    "मैं पेक्स का मेम्बर कैसे बन सकता हआ": "How can I become a member of PACS?",
-    "ਮੈਂ ਪੈਕਸ ਦਾ ਮੇਮ੍ਬਰ ਕਿਵੇਂ ਬਣ ਸਕਦਾ ਹਆ": "How can I become a member of PACS?",    
-    "কীভাবে আমি প্যাক্স (PACS)-এর সদস্য হতে পারি?": "How can I become a member of PACS?",
-    "நான் எப்படி PACS இல் உறுப்பினராகலாம்?": "How can I become a member of PACS?",
-    "मी पॅक्स (PACS) चा सदस्य कसा होऊ शकतो?": "How can I become a member of PACS?",
-
-    # PACS membership documents
-    "पैक्स में जुड़ने के लिए किस प्रकार के दस्तावेजों की जरुरत पड़ती है": "What documents are needed to become a member of PACS?",
-    "ਪੈਕਸ ਵਿਚ ਸ਼ਾਮਿਲ ਹੋਣ ਲਈ ਕਹਿੰਦੇ ਦਸਤਾਵੇਜ਼ ਦੀ ਲੋੜ ਹੁੰਦੀ ਹੈ": "What documents are needed to become a member of PACS?",
-    "প্যাক্স (PACS)-এর সদস্য হতে কী কী নথিপত্র প্রয়োজন?": "What documents are needed to become a member of PACS?",
-    "PACS இல் உறுப்பினராக என்னென்ன ஆவணங்கள் தேவை?": "What documents are needed to become a member of PACS?",
-    "पॅक्स (PACS) चा सदस्य होण्यासाठी कोणती कागदपत्रे आवश्यक आहेत?": "What documents are needed to become a member of PACS?",
-
-    # PACS membership eligibility
-    "पैक्स में जुड़ने के लिए हमारे पास क्या होना चाहिए": "What is eligibility to join PACS?",
-    "ਪੈਕਸ ਵਿਚ ਜੁੜਨ ਲਈ ਕਿ ਹੋਣਾ ਚਾਹੀਦਾ ਹੈ": "What is eligibility to join PACS?",
-    "প্যাক্স (PACS)-এ যুক্ত হওয়ার জন্য আমাদের কী কী থাকতে হবে?": "What is eligibility to join PACS?",
-    "PACS இல் சேருவதற்கு நம்மிடம் என்ன இருக்க வேண்டும்": "What is eligibility to join PACS?",
-    "पॅक्स (PACS) मध्ये सामील होण्यासाठी आपल्याकडे काय असणे आवश्यक आहे?": "What is eligibility to join PACS?",
-
-    # PACS loan eligibility
-    "पैक्स ऋण के लिए कौन पात्र है": "Who qualifies for a PACS loan?",
-    "ਪੈਕਸ ਕਰਜੇ ਲਈ ਕੌਣ ਯੋਗ ਹੈ": "Who qualifies for a PACS loan?",
-    "প্যাক্স (PACS) ঋণের জন্য কারা যোগ্য?": "Who qualifies for a PACS loan?",
-    "PACS கடனுக்கு யார் தகுதியானவர்?": "Who qualifies for a PACS loan?",
-    "पॅक्स (PACS) कर्जासाठी कोण पात्र आहे?": "Who qualifies for a PACS loan?",
-    # PACS tenant farmer
-    "CAN A TENANT FARMER JOIN PACS": "Can a tenant farmer join PACS?",
-
-    # Cooperative bank
-    "সমবায় ব্যাংক কি?": "What is a cooperative bank?",
-
-    # Loan basics
-    "लोन (ऋण) क्या है और यह कैसे काम करता है?": "What is a loan and how does it work?",
-}
-
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 VECTORSTORE_DIR = BASE_DIR / "vectorstore"
 
@@ -69,10 +18,14 @@ def load_vector_store():
     """Load the saved FAISS index and document metadata."""
 
     if not INDEX_PATH.exists():
-        raise FileNotFoundError(f"FAISS index not found: {INDEX_PATH}")
+        raise FileNotFoundError(
+            f"FAISS index not found: {INDEX_PATH}"
+        )
 
     if not METADATA_PATH.exists():
-        raise FileNotFoundError(f"Metadata not found: {METADATA_PATH}")
+        raise FileNotFoundError(
+            f"Metadata not found: {METADATA_PATH}"
+        )
 
     vector_store = faiss.read_index(str(INDEX_PATH))
 
@@ -88,73 +41,293 @@ def retrieve(query, vector_store, documents, top_k=3):
     if vector_store is None or not documents:
         return []
 
-    normalized_query = query.strip().replace(" ?", "?")
-    query_for_retrieval = SHORT_QUERY_MAP.get(normalized_query, normalized_query)
-    query_embedding = create_embedding(query_for_retrieval)
+    # ==================================================
+    # 1. NORMALIZE QUERY
+    # ==================================================
+
+    clean_query = " ".join(
+        str(query).strip().split()
+    )
+
+    clean_query = (
+        clean_query
+        .replace("?", "")
+        .replace("!", "")
+        .replace(",", "")
+        .replace(".", "")
+        .replace(":", "")
+        .replace(";", "")
+        .strip()
+    )
+
+    query_lower = clean_query.lower()
+
+    # ==================================================
+    # 2. IMPROVE PACS QUERIES
+    # ==================================================
+
+    if query_lower == "pacs":
+
+        clean_query = (
+            "PACS Primary Agricultural Credit Society "
+            "cooperative society "
+            "Primary Agricultural Credit Societies"
+        )
+
+    elif "pacs" in query_lower:
+
+        clean_query = (
+            clean_query
+            + " Primary Agricultural Credit Society "
+            "Primary Agricultural Credit Societies "
+            "PACS cooperative society"
+        )
+
+    # ==================================================
+    # 3. IMPROVE ELIGIBILITY / MEMBERSHIP QUERIES
+    # ==================================================
+
+    eligibility_words = [
+        "eligibility",
+        "eligible",
+        "qualify",
+        "qualified",
+        "qualification",
+        "eligibility criteria",
+
+        "who can apply",
+        "who is eligible",
+        "who is eligible to become a member",
+
+        "who can become a member",
+        "who can be a member",
+        "who can join",
+
+        "membership",
+        "member eligibility",
+        "membership criteria",
+        "membership requirements",
+
+        "requirements for membership",
+        "requirements to join",
+
+        "can i become a member",
+        "can i join"
+    ]
+
+    is_eligibility_query = any(
+        word in query_lower
+        for word in eligibility_words
+    )
+
+    if is_eligibility_query:
+
+        clean_query += (
+            " membership "
+            "membership rules "
+            "types of membership "
+            "admission to membership "
+            "eligibility for membership "
+            "membership eligibility "
+            "membership criteria "
+            "membership requirements "
+            "who can become a member "
+            "who can join "
+            "A class membership "
+            "B class members "
+            "eligible persons "
+            "CHAPTER III MEMBERSHIP "
+            "MEMBERSHIP "
+            "ELIGIBILITY FOR A CLASS MEMBERSHIP"
+        )
+
+    # ==================================================
+    # 4. SPECIAL PACS MEMBERSHIP QUERY BOOST
+    # ==================================================
+
+    if (
+        "pacs" in query_lower
+        and is_eligibility_query
+    ):
+
+        clean_query += (
+            " PACS membership "
+            "PACS member "
+            "Primary Agricultural Credit Society membership "
+            "cooperative society membership"
+        )
+
+    # ==================================================
+    # 5. CREATE QUERY EMBEDDING
+    # ==================================================
+
+    query_embedding = create_embedding(
+        clean_query
+    )
+
     query_embedding = np.asarray(
         [query_embedding],
         dtype="float32"
     )
+
+    # ==================================================
+    # 6. SEARCH FAISS
+    # ==================================================
 
     distances, indices = vector_store.search(
         query_embedding,
         top_k
     )
 
+    # ==================================================
+    # 7. BUILD RESULTS
+    # ==================================================
+
     results = []
 
-    for distance, index in zip(distances[0], indices[0]):
+    for distance, index in zip(
+        distances[0],
+        indices[0]
+    ):
 
         if 0 <= index < len(documents):
 
             result = documents[index].copy()
 
-            result["similarity"] = float(distance)
+            result["similarity"] = float(
+                distance
+            )
 
             results.append(result)
+
+    # ==================================================
+    # 8. MEMBERSHIP-SPECIFIC RERANKING
+    # ==================================================
+
+    if (
+        "pacs" in query_lower
+        and is_eligibility_query
+        and results
+    ):
+
+        membership_terms = [
+            "membership",
+            "member",
+            "eligibility for",
+            "a class membership",
+            "b class members",
+            "chapter iii",
+            "admission"
+        ]
+
+        def membership_score(result):
+
+            text = result.get(
+                "text",
+                ""
+            ).lower()
+
+            score = result.get(
+                "similarity",
+                0
+            )
+
+            for term in membership_terms:
+
+                if term in text:
+                    score += 0.08
+
+            return score
+
+        results.sort(
+            key=membership_score,
+            reverse=True
+        )
 
     return results
 
 
-def test_retrieval():
-    """Test FAISS retrieval with a sample cooperative question."""
+def test_queries():
+    """Test important PACS retrieval queries."""
 
     print("\nLoading FAISS index...")
 
     vector_store, documents = load_vector_store()
 
-    print(f"FAISS vectors loaded: {vector_store.ntotal}")
-    print(f"Metadata entries loaded: {len(documents)}")
-
-    query = input("\nEnter your question: ")
-    print(f"\nQuery: {query}")
-    print("\nSearching...\n")
-
-    results = retrieve(
-        query,
-        vector_store,
-        documents,
-        top_k=3
+    print(
+        f"FAISS vectors loaded: "
+        f"{vector_store.ntotal}"
     )
 
-    if not results:
-        print("No results found.")
-        return
+    print(
+        f"Metadata entries loaded: "
+        f"{len(documents)}"
+    )
 
-    for i, result in enumerate(results, start=1):
+    test_questions = [
+        "PACS",
+        "PACS?",
+        "What is PACS?",
+        "Who can become a member of PACS?",
+        "What are the eligibility criteria for PACS membership?",
+        "Who can join PACS?",
+        "What are the requirements to become a PACS member?"
+    ]
 
-        print("=" * 70)
-        print(f"RESULT {i}")
-        print("=" * 70)
+    for query in test_questions:
 
-        print(f"Similarity: {result.get('similarity', 0):.4f}")
-        print(f"Document: {result.get('document', 'Unknown')}")
-        print(f"Source: {result.get('source', 'Unknown')}")
-        print(f"Page: {result.get('page', 'N/A')}")
-        print("\nText:")
-        print(result.get("text", "")[:1000])
-        print()
+        print("\n" + "=" * 80)
+        print(f"QUERY: {query}")
+        print("=" * 80)
+
+        results = retrieve(
+            query,
+            vector_store,
+            documents,
+            top_k=3
+        )
+
+        if not results:
+
+            print("NO RESULTS")
+            continue
+
+        for i, result in enumerate(
+            results,
+            start=1
+        ):
+
+            print(
+                f"\nRESULT {i}"
+            )
+
+            print(
+                f"Similarity: "
+                f"{result.get('similarity', 0):.4f}"
+            )
+
+            print(
+                f"Source: "
+                f"{result.get('source', 'Unknown')}"
+            )
+
+            print(
+                f"Page: "
+                f"{result.get('page', 'N/A')}"
+            )
+
+            print(
+                "\nText:"
+            )
+
+            print(
+                result.get(
+                    "text",
+                    ""
+                )[:700]
+            )
 
 
 if __name__ == "__main__":
-    test_retrieval()
+
+    test_queries()

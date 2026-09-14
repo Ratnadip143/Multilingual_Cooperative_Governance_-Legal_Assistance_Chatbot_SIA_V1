@@ -396,14 +396,42 @@
     window.speechSynthesis.speak(utter);
   }
 
-  /* ============================================================
+  /* =========================================function setSpeaking(...)===================
      Boot + public API
      ============================================================ */
-
-  window.addEventListener("DOMContentLoaded", () => {
+    window.addEventListener("DOMContentLoaded", () => {
     resizeCanvas();
     startAssistant();
-  });
+
+    const backButton = document.getElementById("backButton");
+
+    if (backButton) {
+        backButton.addEventListener("click", () => {
+            window.location.href = "/static/index.html";
+        });
+    }
+});
+
+function showAnswerWordByWord(answer) {
+  const caption = document.getElementById("answerCaption");
+
+  if (!caption) return;
+
+  caption.textContent = "";
+
+  const words = answer.split(/\s+/);
+  let index = 0;
+
+  const interval = setInterval(() => {
+    if (index >= words.length) {
+      clearInterval(interval);
+      return;
+    }
+
+    caption.textContent += (index === 0 ? "" : " ") + words[index];
+    index++;
+  }, 120);
+}
 
   window.assistant = {
     setSpeaking,
@@ -412,6 +440,7 @@
     setBored,
     showSmile,
     demoSpeak,
+    showAnswerWordByWord,
     get state() {
       return assistantState;
     }

@@ -1,127 +1,34 @@
-// Sets the --origin-x / --origin-y custom properties on the transition
-// overlay to the exact center of the element that triggered the
-// transition, so the expanding circle always starts from that element -
-// no matter where it is on screen or how the viewport is sized.
+// ============================================================
+// SIA - MAIN FRONTEND SCRIPT
+// Home page controls only
+// Voice recording is handled inside face.html
+// ============================================================
+
+"use strict";
+
+// ============================================================
+// PAGE TRANSITION
+// ============================================================
+
 function setTransitionOrigin(overlayEl, triggerEl) {
+    if (!overlayEl || !triggerEl) return;
+
     const rect = triggerEl.getBoundingClientRect();
+
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
 
     const xPercent = (centerX / window.innerWidth) * 100;
     const yPercent = (centerY / window.innerHeight) * 100;
 
-    overlayEl.style.setProperty('--origin-x', `${xPercent}%`);
-    overlayEl.style.setProperty('--origin-y', `${yPercent}%`);
+    overlayEl.style.setProperty("--origin-x", `${xPercent}%`);
+    overlayEl.style.setProperty("--origin-y", `${yPercent}%`);
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    const micButton = document.getElementById('micButton');
-    const voiceControl = document.querySelector('.voice-control');
-    const tapText = document.querySelector('.tap-text');
-    let isListening = false;
+// ============================================================
+// TRANSLATIONS
+// ============================================================
 
-    // Toggle Listening State
-    micButton.addEventListener('click', () => {
-        isListening = !isListening;
-        
-        if (isListening) {
-            // Activate animation
-            voiceControl.classList.add('listening');
-            micButton.style.backgroundColor = '#0a4d2e'; // Darker green
-            micButton.style.transform = 'scale(1.1)';
-            tapText.textContent = "Listening...";
-        } else {
-            // Deactivate animation
-            voiceControl.classList.remove('listening');
-            micButton.style.backgroundColor = '#1b7a43'; // Normal green
-            micButton.style.transform = 'scale(1)';
-            tapText.textContent = "Tap to speak";
-        }
-    });
-
-
-            // Get dropdown elements
-        const langBtn = document.getElementById('langBtn');
-        const langDropdown = document.getElementById('langDropdown');
-        const selectedLang = document.getElementById('selectedLang');
-
-        // 1. Toggle dropdown when button is clicked
-        langBtn.addEventListener('click', (e) => {
-            e.stopPropagation(); // Prevents click from bubbling up to the document
-            langDropdown.classList.toggle('show');
-        });
-
-        // 2. Handle selecting a language
-        const dropdownItems = document.querySelectorAll('.dropdown-item');
-        dropdownItems.forEach(item => {
-            item.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevents triggering the button click again
-                
-                // Optional: Update the button text to show what was selected
-                // selectedLang.innerHTML = `${item.textContent} ▼`;
-                
-                // Close the menu
-                langDropdown.classList.remove('show');
-            });
-        });
-
-// 3. Close dropdown if the user clicks anywhere else on the screen
-document.addEventListener('click', (e) => {
-    if (!langBtn.contains(e.target)) {
-        langDropdown.classList.remove('show');
-    }
-});
-
-    // Add gentle hover effects to the language and keyboard buttons
-    const controlBtns = document.querySelectorAll('.control-btn');
-    controlBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // A small ripple or click effect could go here
-            btn.style.transform = 'scale(0.95)';
-            setTimeout(() => {
-                btn.style.transform = 'translateY(-3px)'; // returns to hover state
-            }, 100);
-        });
-    });
-
-    // Function to fetch message data from your backend
-async function fetchInboxData() {
-    try {
-        // Replace this URL with your actual backend endpoint
-        const response = await fetch('http://localhost:3000/api/messages');
-        const data = await response.json();
-        
-        const badge = document.getElementById('messageBadge');
-        
-        // Update the UI based on what the backend sends back
-        if (data.unreadCount > 0) {
-            badge.textContent = data.unreadCount;
-            badge.style.display = 'block'; // Show badge
-        } else {
-            badge.style.display = 'none'; // Hide badge if 0 messages
-        }
-    } catch (error) {
-        console.error('Error connecting to backend:', error);
-    }
-}
-
-// Call the function when the page loads to check for messages
-// Uncomment the line below when your backend is ready!
-// fetchInboxData(); 
-
-    // Open the inbox after the existing top-right transition completes.
-        // Open the inbox after the existing top-right transition completes.
-    const inboxBtn = document.getElementById('inboxBtn');
-    inboxBtn.addEventListener('click', () => {
-        setTransitionOrigin(transitionOverlay, inboxBtn);
-        transitionOverlay.classList.add('expand');   // ✅ new
-
-        setTimeout(() => {
-            window.location.href = 'mail.html';
-        }, 700);
-    });
-
-    // Translation Dictionary
 const translations = {
     en: {
         subtitle: "Your Cooperative<br>AI Assistant",
@@ -134,6 +41,7 @@ const translations = {
         type: "Type instead ➔",
         selector: "English | हिंदी | ਪੰਜਾਬੀ | More ▼"
     },
+
     hi: {
         subtitle: "आपका सहकारी<br>एआई सहायक",
         slogan1: "सही<br>जानकारी<br>सबके लिए",
@@ -145,6 +53,7 @@ const translations = {
         type: "टाइप करें ➔",
         selector: "हिंदी ▼"
     },
+
     bn: {
         subtitle: "আপনার সমবায়<br>এআই সহকারী",
         slogan1: "সবার<br>জন্য<br>সঠিক তথ্য",
@@ -156,6 +65,7 @@ const translations = {
         type: "টাইপ করুন ➔",
         selector: "বাংলা ▼"
     },
+
     pa: {
         subtitle: "ਤੁਹਾਡਾ ਸਹਿਕਾਰੀ<br>AI ਸਹਾਇਕ",
         slogan1: "ਸਭ<br>ਲਈ<br>ਸਹੀ ਜਾਣਕਾਰੀ",
@@ -167,6 +77,7 @@ const translations = {
         type: "ਟਾਈਪ ਕਰੋ ➔",
         selector: "ਪੰਜਾਬੀ ▼"
     },
+
     mr: {
         subtitle: "तुमचा सहकारी<br>AI सहाय्यक",
         slogan1: "सर्वांसाठी<br>योग्य<br>माहिती",
@@ -178,6 +89,7 @@ const translations = {
         type: "टाईप करा ➔",
         selector: "मराठी ▼"
     },
+
     ta: {
         subtitle: "உங்கள் கூட்டுறவு<br>AI உதவியாளர்",
         slogan1: "அனைவருக்கும்<br>சரியான<br>தகவல்",
@@ -191,62 +103,384 @@ const translations = {
     }
 };
 
-// Update the language selection click event
-const allDropdownItems = document.querySelectorAll('.dropdown-item');
-allDropdownItems.forEach(item => {
-    item.addEventListener('click', (e) => {
-        e.stopPropagation(); 
-        
-        // Get the language code (en, hi, bn, etc.)
-        const selectedLang = item.getAttribute('data-lang');
-        
-        // Update all translated text on the page
-        document.querySelectorAll('[data-translate]').forEach(elem => {
-            const key = elem.getAttribute('data-translate');
-            if(translations[selectedLang][key]) {
-                elem.innerHTML = translations[selectedLang][key];
+// ============================================================
+// MAIN INITIALIZATION
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    // ========================================================
+    // ELEMENTS
+    // ========================================================
+
+    const micButton = document.getElementById("micButton");
+    const voiceControl = document.querySelector(".voice-control");
+    const tapText = document.querySelector(".tap-text");
+
+    const langBtn = document.getElementById("langBtn");
+    const langDropdown = document.getElementById("langDropdown");
+    const selectedLang = document.getElementById("selectedLang");
+
+    const typeBtn = document.getElementById("typeBtn");
+
+    const transitionOverlay =
+        document.getElementById("transitionOverlay");
+
+    const inboxBtn = document.getElementById("inboxBtn");
+    const messageBadge = document.getElementById("messageBadge");
+
+    // ========================================================
+    // HOME PAGE MICROPHONE
+    // ========================================================
+    // This button only opens face.html.
+    // Do not record audio here.
+    // Audio recording is handled inside face.html.
+
+    let isOpeningFace = false;
+
+    function resetMicState() {
+        isOpeningFace = false;
+
+        if (voiceControl) {
+            voiceControl.classList.remove("listening");
+        }
+
+        if (micButton) {
+            micButton.style.backgroundColor = "#1b7a43";
+            micButton.style.transform = "scale(1)";
+        }
+
+        if (tapText) {
+            tapText.textContent = "Tap to speak";
+        }
+    }
+
+    window.addEventListener("pageshow", resetMicState);
+
+    if (micButton) {
+        micButton.addEventListener("click", () => {
+
+            if (isOpeningFace) return;
+
+            isOpeningFace = true;
+
+            if (voiceControl) {
+                voiceControl.classList.add("listening");
+            }
+
+            micButton.style.backgroundColor = "#0a4d2e";
+            micButton.style.transform = "scale(1.08)";
+
+            if (tapText) {
+                tapText.textContent = "Opening SIA...";
+            }
+
+           setTimeout(() => {
+    sessionStorage.setItem("playGreeting", "true");
+    window.location.href = "/static/face.html";
+}, 300);
+        });
+    }
+
+    // ========================================================
+    // LANGUAGE DROPDOWN
+    // ========================================================
+
+    if (langBtn && langDropdown) {
+        langBtn.addEventListener("click", (event) => {
+            event.stopPropagation();
+            langDropdown.classList.toggle("show");
+        });
+    }
+
+    // ========================================================
+    // LANGUAGE SELECTION
+    // ========================================================
+
+    const dropdownItems =
+        document.querySelectorAll(".dropdown-item");
+
+    dropdownItems.forEach((item) => {
+
+        item.addEventListener("click", (event) => {
+            event.stopPropagation();
+
+            const languageCode =
+                item.getAttribute("data-lang");
+
+            if (!translations[languageCode]) {
+                return;
+            }
+
+            document
+                .querySelectorAll("[data-translate]")
+                .forEach((element) => {
+
+                    const key =
+                        element.getAttribute("data-translate");
+
+                    const translatedText =
+                        translations[languageCode][key];
+
+                    if (translatedText) {
+                        element.innerHTML = translatedText;
+                    }
+                });
+
+            if (selectedLang) {
+                selectedLang.innerHTML =
+                    translations[languageCode].selector;
+            }
+
+            if (langDropdown) {
+                langDropdown.classList.remove("show");
+            }
+
+            localStorage.setItem("siaLanguage", languageCode);
+        });
+    });
+
+    // ========================================================
+    // CLOSE LANGUAGE DROPDOWN
+    // ========================================================
+
+    document.addEventListener("click", (event) => {
+
+        if (
+            langBtn &&
+            langDropdown &&
+            !langBtn.contains(event.target) &&
+            !langDropdown.contains(event.target)
+        ) {
+            langDropdown.classList.remove("show");
+        }
+    });
+
+    // ========================================================
+    // LOAD SAVED LANGUAGE
+    // ========================================================
+
+    const savedLanguage =
+        localStorage.getItem("siaLanguage") || "en";
+
+    const savedLanguageItem =
+        document.querySelector(
+            `.dropdown-item[data-lang="${savedLanguage}"]`
+        );
+
+    if (savedLanguageItem) {
+        savedLanguageItem.click();
+    }
+
+    // ========================================================
+    // CONTROL BUTTON ANIMATION
+    // ========================================================
+
+    const controlButtons =
+        document.querySelectorAll(".control-btn");
+
+    controlButtons.forEach((button) => {
+
+        button.addEventListener("click", () => {
+
+            button.style.transform = "scale(0.95)";
+
+            setTimeout(() => {
+                button.style.transform = "translateY(-3px)";
+            }, 120);
+        });
+    });
+
+    // ========================================================
+    // NOTIFICATION BADGE
+    // ========================================================
+
+    function updateNotificationBadge(count) {
+
+        if (!messageBadge) return;
+
+        count = Number(count) || 0;
+
+        if (count > 0) {
+            messageBadge.textContent = count;
+            messageBadge.style.display = "flex";
+        } else {
+            messageBadge.textContent = "";
+            messageBadge.style.display = "none";
+        }
+    }
+
+    // ========================================================
+    // FETCH NOTIFICATIONS
+    // ========================================================
+
+    async function fetchInboxData() {
+
+        try {
+            const response = await fetch("/api/messages");
+
+            if (!response.ok) {
+                throw new Error(
+                    `Notification API returned ${response.status}`
+                );
+            }
+
+            const data = await response.json();
+
+            updateNotificationBadge(data.unreadCount);
+
+        } catch (error) {
+            console.log(
+                "Notification service is not available yet."
+            );
+        }
+    }
+
+    updateNotificationBadge(0);
+    fetchInboxData();
+
+    setInterval(() => {
+        fetchInboxData();
+    }, 30000);
+
+    // ========================================================
+    // OPEN MAIL / NOTIFICATION PAGE
+    // ========================================================
+
+    if (inboxBtn) {
+
+        inboxBtn.addEventListener("click", () => {
+
+            if (transitionOverlay) {
+
+                setTransitionOrigin(
+                    transitionOverlay,
+                    inboxBtn
+                );
+
+                transitionOverlay.classList.remove("expand");
+                transitionOverlay.classList.add("expand");
+
+                setTimeout(() => {
+                    window.location.href = "/static/mail.html";
+                }, 700);
+
+            } else {
+                window.location.href = "/static/mail.html";
             }
         });
+    }
 
-        // Update the button text itself
-        document.getElementById('selectedLang').innerHTML = translations[selectedLang].selector;
-        
-        // Close the menu
-        document.getElementById('langDropdown').classList.remove('show');
-    });
-    });
-});
+    // ========================================================
+    // TYPE INSTEAD BUTTON
+    // ========================================================
 
+    if (typeBtn) {
 
-// Get the button and the overlay
-const typeBtn = document.getElementById('typeBtn');
-const transitionOverlay = document.getElementById('transitionOverlay');
+        typeBtn.addEventListener("click", () => {
 
-typeBtn.addEventListener('click', () => {
-    // 1. Compute the origin from the button's actual position, then start
-    //    the white expansion animation from that exact point
-    setTransitionOrigin(transitionOverlay, typeBtn);
-    transitionOverlay.classList.add('expand');
-    
-    // 2. Wait for the animation to finish (700 milliseconds), then change the page
-    setTimeout(() => {
-        // Replace 'chat.html' with the actual name of your next HTML file
-        window.location.href = 'chat.html'; 
-    }, 700);
-});
+            if (transitionOverlay) {
 
-// --- Mic Button Transition ---
-const micButton = document.getElementById('micButton');
+                setTransitionOrigin(
+                    transitionOverlay,
+                    typeBtn
+                );
 
-micButton.addEventListener('click', () => {
-    // 1. Compute the origin from the mic button's actual position, then
-    //    apply the black expansion classes
-    setTransitionOrigin(transitionOverlay, micButton);
-    transitionOverlay.className = 'page-transition-overlay origin-mic expand-mic';
-    
-    // 2. Wait 700ms for the animation, then load the new page
-    setTimeout(() => {
-        // Replace 'voice.html' with your actual voice assistant HTML file
-        window.location.href = 'face.html'; 
-    }, 700); 
+                transitionOverlay.classList.remove("expand");
+                transitionOverlay.classList.add("expand");
+
+                setTimeout(() => {
+                    window.location.href = "/static/chat.html";
+                }, 700);
+
+            } else {
+                window.location.href = "/static/chat.html";
+            }
+        });
+    }
+
+    // ========================================================
+    // CONNECTION STATUS
+    // ========================================================
+
+    function updateConnectionStatus() {
+
+        const status =
+            document.getElementById("connection-status");
+
+        if (!status) return;
+
+        status.textContent =
+            navigator.onLine ? "📶" : "📵";
+    }
+
+    updateConnectionStatus();
+
+    window.addEventListener(
+        "online",
+        updateConnectionStatus
+    );
+
+    window.addEventListener(
+        "offline",
+        updateConnectionStatus
+    );
+
+    // ========================================================
+    // DATE AND TIME
+    // ========================================================
+
+    function updateDateTime() {
+
+        const now = new Date();
+
+        const dateElement =
+            document.getElementById("current-date");
+
+        const timeElement =
+            document.getElementById("current-time");
+
+        if (dateElement) {
+            dateElement.textContent =
+                now.toLocaleDateString("en-IN", {
+                    weekday: "short",
+                    day: "numeric",
+                    month: "short",
+                    year: "numeric"
+                });
+        }
+
+        if (timeElement) {
+            timeElement.textContent =
+                now.toLocaleTimeString("en-IN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true
+                });
+        }
+    }
+
+    updateDateTime();
+
+    const initialTime =
+        document.getElementById("initial-message-time");
+
+    function updateInitialMessageTime() {
+
+        if (initialTime) {
+            initialTime.textContent =
+                new Date().toLocaleTimeString("en-IN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true
+                });
+        }
+    }
+
+    updateInitialMessageTime();
+
+    setInterval(() => {
+        updateDateTime();
+        updateInitialMessageTime();
+    }, 1000);
 });

@@ -23,3 +23,9 @@ def record_audio(
     print(f"Recording saved to {filename}")
 
     return filename
+if __name__ == "__main__":
+    record_audio(
+        filename="test_audio.wav",
+        duration=5,
+        sample_rate=16000
+    )
