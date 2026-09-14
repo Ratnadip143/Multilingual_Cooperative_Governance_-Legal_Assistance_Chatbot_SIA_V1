@@ -23,16 +23,14 @@ def clean_text(text):
 
 def extract_pdf(file_path):
     """Extract text from every page of a PDF."""
-
     documents = []
-
     pdf = fitz.open(file_path)
-
     for page_number, page in enumerate(pdf, start=1):
         text = page.get_text("text")
         text = clean_text(text)
 
-        if not text:
+        # Skip pages containing only page numbers / Roman numerals
+        if not text or re.fullmatch(r"(?:[ivxlcdm]+|\d+)", text.lower()):
             continue
 
         documents.append(
@@ -43,12 +41,8 @@ def extract_pdf(file_path):
                 "text": text,
             }
         )
-
     pdf.close()
-
     return documents
-
-
 def load_documents():
     """Load PDF, TXT and Markdown documents."""
 
