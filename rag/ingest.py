@@ -25,7 +25,7 @@ def extract_pdf(file_path):
     """Extract text from every page of a PDF."""
     documents = []
 
-    pdf = pymupdf.open(file_path)
+    pdf = fitz.open(file_path)
 
     for page_number, page in enumerate(pdf, start=1):
         text = page.get_text("text")
