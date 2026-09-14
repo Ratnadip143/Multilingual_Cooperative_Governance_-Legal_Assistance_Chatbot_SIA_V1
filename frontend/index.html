@@ -1,105 +1,290 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <link rel="icon" type="image/png" href="/static/Chatbot.png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>SIA - Your Cooperative AI Assistant</title>
+
+    <link rel="icon" type="image/png" href="/static/Chatbot.png">
+
     <link rel="stylesheet" href="/static/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+    <style>
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background-image: url("/static/Background.png?v=999") !important;
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+        }
+
+        .robot-container {
+            display: none !important;
+        }
+    </style>
 </head>
+
 <body>
+
     <div class="app-container">
-    <div class="background-overlay">
-        <div class="inbox-container glass-effect" id="inboxBtn">
-    <i class="fa-solid fa-bell"></i>
-    <span class="badge" id="messageBadge" style="display: none;"></span>
-</div>
-    </div>
 
-        <header class="logo-container fade-in">
-            <h1 class="logo-title"><i class="fa-solid fa-leaf" style="color: #4CAF50; font-size: 0.8em; margin-bottom: 5px;"></i><br>SIA</h1>
-            <p class="logo-subtitle" data-translate="subtitle">Your Cooperative<br>AI Assistant</p>
-        </header>
+        <!-- Notification -->
+        <div class="background-overlay">
 
-        <main class="main-content">
-            <div class="floating-text left-text fade-in-delayed" data-translate="slogan1">
-                Sahi<br>Jaankari<br>Sabke Liye
+            <div
+                class="inbox-container glass-effect"
+                id="inboxBtn"
+                title="Messages"
+            >
+                <i class="fa-solid fa-bell"></i>
+
+                <span
+                    class="badge"
+                    id="messageBadge"
+                    style="display: none;"
+                >
+                    0
+                </span>
             </div>
 
-           <div class="robot-container">
-
-    <img src="/static/Chatbot.png"
-         alt="SIA Robot"
-         class="robot-image"
-
-    <!-- Animated SIA Face -->
-    <div class="sia-face">
-        <div class="sia-eyes">
-            <span class="eye left-eye"></span>
-            <span class="eye right-eye"></span>
         </div>
 
-        <div class="sia-mouth"></div>
+
+        <!-- SIA Logo -->
+        <header class="logo-container fade-in">
+
+            <h1 class="logo-title">
+                <i
+                    class="fa-solid fa-leaf"
+                    style="
+                        color: #4CAF50;
+                        font-size: 0.8em;
+                        margin-bottom: 5px;
+                    "
+                ></i>
+                <br>
+                SIA
+            </h1>
+
+            <p
+                class="logo-subtitle"
+                data-translate="subtitle"
+            >
+                Your Cooperative<br>
+                AI Assistant
+            </p>
+
+        </header>
+
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+    <div
+        class="floating-text left-text fade-in-delayed"
+        data-translate="slogan1"
+    >
+        Sahi<br>
+        Jaankari<br>
+        Sabke Liye
     </div>
 
-</div>
+    <div class="robot-container"></div>
 
-            <div class="speech-bubble pop-in">
-                <h2 data-translate="hello">Hello! 😊</h2>
-                <p class="intro" data-translate="intro">I am SIA, your Cooperative and Government Assistant.</p>
-                <p class="description" data-translate="desc">Ask me anything about schemes, cooperative laws, eligibility, or more!</p>
-            </div>
+    <div class="speech-bubble pop-in">
 
-            <div class="floating-text right-text fade-in-delayed" data-translate="slogan2">
-                Sahakar<br>Se<br>Samriddhi
-            </div>
-        </main>
+        <h2 data-translate="hello">
+            Hello! 😊
+        </h2>
 
+        <p class="intro" data-translate="intro">
+            I am SIA, your Cooperative and Government Assistant.
+        </p>
+
+        <p class="description" data-translate="desc">
+            Ask me anything about schemes, cooperative laws,
+            eligibility, or more!
+        </p>
+
+    </div>
+
+    <div
+        class="floating-text right-text fade-in-delayed"
+        data-translate="slogan2"
+    >
+        Sahakar<br>
+        Se<br>
+        Samriddhi
+    </div>
+
+</main>
+
+
+        <!-- Bottom Controls -->
         <footer class="bottom-bar slide-up">
-            <!-- Replace your existing lang-btn div with this -->
-            <div class="control-btn lang-btn glass-effect" id="langBtn">
+
+            <!-- Language -->
+            <div
+                class="control-btn lang-btn glass-effect"
+                id="langBtn"
+            >
+
                 <i class="fa-solid fa-globe"></i>
-                <span id="selectedLang">English | हिंदी | ਪੰਜਾਬੀ | More ▼</span>
-                
-                <!-- Updated Dropdown Menu -->
-                <div class="dropdown-menu" id="langDropdown">
-                    <div class="dropdown-item" data-lang="en">English</div>
-                    <div class="dropdown-item" data-lang="bn">Bengali (বাংলা)</div>
-                    <div class="dropdown-item" data-lang="hi">Hindi (हिंदी)</div>
-                    <div class="dropdown-item" data-lang="pa">Punjabi (ਪੰਜਾਬੀ)</div>
-                    <div class="dropdown-item" data-lang="mr">Marathi (मराठी)</div>
-                    <div class="dropdown-item" data-lang="ta">Tamil (தமிழ்)</div>
+
+                <span id="selectedLang">
+                    English | हिंदी | ਪੰਜਾਬੀ | More ▼
+                </span>
+
+                <div
+                    class="dropdown-menu"
+                    id="langDropdown"
+                >
+
+                    <div
+                        class="dropdown-item"
+                        data-lang="en"
+                    >
+                        English
+                    </div>
+
+                    <div
+                        class="dropdown-item"
+                        data-lang="bn"
+                    >
+                        Bengali (বাংলা)
+                    </div>
+
+                    <div
+                        class="dropdown-item"
+                        data-lang="hi"
+                    >
+                        Hindi (हिंदी)
+                    </div>
+
+                    <div
+                        class="dropdown-item"
+                        data-lang="pa"
+                    >
+                        Punjabi (ਪੰਜਾਬੀ)
+                    </div>
+
+                    <div
+                        class="dropdown-item"
+                        data-lang="mr"
+                    >
+                        Marathi (मराठी)
+                    </div>
+
+                    <div
+                        class="dropdown-item"
+                        data-lang="ta"
+                    >
+                        Tamil (தமிழ்)
+                    </div>
+
                 </div>
+
             </div>
 
+
+            <!-- Voice -->
             <div class="voice-control glass-effect">
+
                 <div class="sound-waves left-waves">
-                    <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
                 </div>
-                
-                <button class="mic-btn pulse-anim" id="micButton">
+
+
+                <button
+                    class="mic-btn pulse-anim"
+                    id="micButton"
+                    type="button"
+                    aria-label="Tap to speak"
+                >
                     <i class="fa-solid fa-microphone"></i>
                 </button>
-                
-                <!-- ✅ Removed the duplicate text div below this -->
+
+
                 <div class="sound-waves right-waves">
-                    <div class="tap-text" data-translate="tap">Tap to speak</div>
+
+                    <div
+                        class="tap-text"
+                        data-translate="tap"
+                    >
+                        Tap to speak
+                    </div>
+
                 </div>
+
             </div>
 
-            <!-- 1. Add id="typeBtn" to your existing keyboard button -->
-            <div class="control-btn keyboard-btn glass-effect" id="typeBtn">
+
+            <!-- Type instead -->
+            <div
+                class="control-btn keyboard-btn glass-effect"
+                id="typeBtn"
+            >
+
                 <i class="fa-solid fa-keyboard"></i>
-                <span data-translate="type">Type instead ➔</span>
-            </div>
 
-            <!-- ... rest of your code ... -->
+                <span data-translate="type">
+                    Type instead ➔
+                </span>
+
+            </div>
 
         </footer>
+
     </div>
-    <div class="page-transition-overlay-1" id="transitionOverlay"></div>
+
+
+    <!-- Page transition -->
+    <div
+        class="page-transition-overlay"
+        id="transitionOverlay"
+    ></div>
+
+
+    <!-- Main JavaScript -->
     <script src="/static/script.js"></script>
+
+    <style>
+    .main-content {
+        position: relative !important;
+    }
+
+    .speech-bubble {
+        position: absolute !important;
+        left: 48% !important;
+        top: 40% !important;
+        margin: 0 !important;
+        transform: none !important;
+        z-index: 10 !important;
+    }
+</style>
+
 </body>
+
 </html>

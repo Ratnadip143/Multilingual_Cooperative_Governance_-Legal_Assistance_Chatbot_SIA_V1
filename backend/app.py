@@ -3,9 +3,13 @@ from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pathlib import Path
+from fastapi import UploadFile, File, HTTPException
+from backend.voice.tts import text_to_speech
 
 import os
 import re
+import base64
+import traceback
 
 from dotenv import load_dotenv
 from sarvamai import SarvamAI
@@ -60,6 +64,19 @@ app.mount(
     name="static"
 )
 
+@app.get("/greeting")
+def greeting():
+    audio_file = text_to_speech(
+        text="Hello! I am SIA, your Smart Indian Assistant. How can I help you today?",
+        language_code="en-IN",
+        output_file="greeting.wav"
+    )
+
+    return FileResponse(
+        audio_file,
+        media_type="audio/wav",
+        filename="greeting.wav"
+    )
 
 @app.get("/")
 def serve_frontend():
@@ -113,6 +130,43 @@ except Exception as e:
     vector_store = None
     chunks = []
 
+def expand_query(question: str) -> str:
+    """
+    Adds context to short or acronym-based questions
+    before sending them to the knowledge-base retriever.
+    """
+
+    original = question.strip()
+    normalized = original.lower().strip(" ?.!")
+
+    short_query_map = {
+        "pacs": (
+            "What is PACS? Explain the full form, meaning, role, "
+            "functions, and importance of Primary Agricultural Credit Societies "
+            "in the cooperative sector."
+        ),
+        "what is pacs": (
+            "What is PACS? Explain the full form, meaning, role, "
+            "functions, and importance of Primary Agricultural Credit Societies "
+            "in the cooperative sector."
+        ),
+        "pacs full form": (
+            "What is the full form of PACS and what does Primary Agricultural "
+            "Credit Society mean?"
+        ),
+        "pacs meaning": (
+            "Explain the meaning and functions of Primary Agricultural Credit Societies."
+        )
+    }
+
+    if normalized in short_query_map:
+        return short_query_map[normalized]
+
+    # Add context to other very short questions
+    if len(original.split()) <= 2:
+        return f"Explain {original} in the context of Indian cooperatives and government schemes."
+
+    return original
 
 # =========================================================
 # HEALTH CHECK
@@ -373,7 +427,7 @@ def ask_question(
     # CREATE SEARCH QUERY
     # =====================================================
 
-    search_query = request.question
+    search_query = expand_query(request.question)
 
 
     if language_name != "English":
@@ -776,3 +830,74 @@ def get_messages():
     "unreadCount": 0,
     "messages": []
 }
+    
+    
+    # =========================================================
+# VOICE ENDPOINT
+# =========================================================
+
+@app.post("/voice")
+async def voice_endpoint(
+    audio: UploadFile = File(...)
+):
+    try:
+        # Save uploaded audio
+        temp_audio = BASE_DIR / "temp_input.wav"
+
+        audio_data = await audio.read()
+
+        with open(temp_audio, "wb") as f:
+            f.write(audio_data)
+
+        # Speech to Text
+        with open(temp_audio, "rb") as audio_file:
+            stt_response = client.speech_to_text.transcribe(
+                file=audio_file,
+                model="saaras:v4"
+            )
+
+        transcript = stt_response.transcript
+
+        if not transcript:
+            raise HTTPException(
+                status_code=400,
+                detail="Could not understand audio."
+            )
+
+        # Existing RAG logic
+        result = ask_question(
+            QuestionRequest(question=transcript)
+        )
+        answer = result["answer"]
+
+        # Add greeting only for the first question
+        if not hasattr(app.state, "first_conversation_done"):
+            answer = (
+                "Hello! I am SIA, your Smart Indian Assistant. "
+                + answer
+            )
+            app.state.first_conversation_done = True
+
+        audio_file = text_to_speech(
+            text=answer,
+            output_file="response.wav"
+        )
+        with open("response.wav", "rb") as f:
+         audio_bytes = f.read()
+
+        audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")
+
+        return {
+            "answer": answer,
+            "audio": audio_base64
+        }
+
+    except Exception as e:
+        print("\n========== VOICE ENDPOINT ERROR ==========")
+        traceback.print_exc()
+        print("==========================================\n")
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Voice processing failed: {str(e)}"
+        )

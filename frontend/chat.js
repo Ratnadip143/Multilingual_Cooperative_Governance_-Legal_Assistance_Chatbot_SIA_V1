@@ -413,3 +413,84 @@ window.addEventListener("offline", updateConnectionStatus);
 
 document.addEventListener("DOMContentLoaded", updateConnectionStatus);
 
+
+// ===============================
+// SIA Voice Recording
+// ===============================
+
+const micButton = document.getElementById("micButton");
+
+let mediaRecorder;
+let audioChunks = [];
+let isRecording = false;
+
+if (micButton) {
+    micButton.addEventListener("click", async () => {
+
+        if (!isRecording) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: true
+                });
+
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                isRecording = true;
+
+                micButton.classList.add("recording");
+                micButton.innerHTML = '<i class="fa-solid fa-stop"></i>';
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, {
+                        type: "audio/webm"
+                    });
+
+                    const formData = new FormData();
+                    formData.append("audio", audioBlob, "voice.webm");
+
+                    try {
+                        const response = await fetch("/voice", {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        if (!response.ok) {
+                            throw new Error("Voice request failed");
+                        }
+
+                        const audioData = await response.blob();
+                        const audioURL = URL.createObjectURL(audioData);
+
+                        const audio = new Audio(audioURL);
+                        audio.play();
+
+                    } catch (error) {
+                        console.error("Voice error:", error);
+                        alert("Sorry, I could not understand your voice.");
+                    }
+
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+
+            } catch (error) {
+                console.error("Microphone permission error:", error);
+                alert("Please allow microphone access.");
+            }
+
+        } else {
+            mediaRecorder.stop();
+            isRecording = false;
+
+            micButton.classList.remove("recording");
+            micButton.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+        }
+    });
+}

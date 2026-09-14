@@ -1,5 +1,6 @@
 import base64
 import os
+import re
 
 from dotenv import load_dotenv
 from sarvamai import SarvamAI
@@ -20,7 +21,7 @@ def text_to_speech(
     """
     Convert text to speech using Sarvam Bulbul.
     """
-    text = text.replace("SIA", "Sy-aa")
+    text = re.sub(r"\bSIA\b", "siːə", text, flags=re.IGNORECASE)
     response = client.text_to_speech.convert(
     text=text,
     language_code=language_code,
@@ -39,3 +40,10 @@ def text_to_speech(
     print(f"TTS audio saved to: {output_file}")
 
     return output_file
+
+if __name__ == "__main__":
+    text_to_speech(
+        text="Hello, I am SIA, your Smart Indian Assistant. How can I help you today?",
+        language_code="en-IN",
+        output_file="test_sia.wav"
+    )

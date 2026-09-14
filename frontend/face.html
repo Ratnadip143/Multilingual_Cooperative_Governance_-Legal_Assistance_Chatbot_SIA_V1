@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <link rel="icon"
+          type="image/png"
+          href="/static/Chatbot.png">
+
+    <title>SIA Voice Assistant</title>
+
+    <link rel="stylesheet" href="/static/face.css">
+
+    <style>
+        .voice-panel {
+            position: fixed;
+            bottom: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        #statusText {
+            min-width: 100px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            background: white;
+            color: #222;
+            font-size: 12px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        #micButton {
+            width: 64px;
+            height: 64px;
+            border: none;
+            border-radius: 50%;
+            background: #198754;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 0 18px rgba(25, 135, 84, 0.7);
+            transition: 0.2s;
+        }
+
+        #micButton:hover {
+            transform: scale(1.08);
+        }
+
+        #micButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #micButton.recording {
+            background: #dc3545;
+            animation: pulse 1s infinite;
+        }
+
+        #tryAgainButton {
+            display: none;
+            padding: 9px 18px;
+            border: none;
+            border-radius: 20px;
+            background: white;
+            color: #198754;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #backButton {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 200;
+            border: none;
+            border-radius: 20px;
+            padding: 7px 13px;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+            }
+
+            70% {
+                box-shadow: 0 0 0 18px rgba(220, 53, 69, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <button id="backButton" type="button">
+        ← Back
+    </button>
+
+    <main class="scene" id="scene">
+
+        <div class="face" id="face" data-state="starting">
+
+            <div class="eyes" id="eyes">
+                <div class="eye" id="eyeLeft">
+                    <div class="eye-fill"></div>
+                </div>
+
+                <div class="eye" id="eyeRight">
+                    <div class="eye-fill"></div>
+                </div>
+            </div>
+
+            <div class="mouth-wrap">
+                <canvas id="mouthCanvas"></canvas>
+            </div>
+
+        </div>
+
+    </main>
+
+    <section class="voice-panel">
+
+        <div id="statusText">
+            Speak now
+        </div>
+
+        <div id="answerCaption"></div>
+
+        <button id="micButton"
+                type="button"
+                aria-label="Start speaking">
+            🎤
+        </button>
+
+        <button id="tryAgainButton"
+                type="button">
+            Try Again
+        </button>
+
+    </section>
+
+    <script src="/static/face.js"></script>
+
+    <script>
+        const micButton = document.getElementById("micButton");
+        const statusText = document.getElementById("statusText");
+        const tryAgainButton = document.getElementById("tryAgainButton");
+        const backButton = document.getElementById("backButton");
+
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let currentStream = null;
+        let isBusy = false;
+        let greetingPlayed = false;
+
+        function updateStatus(message) {
+            statusText.textContent = message;
+        }
+
+        function showTryAgain() {
+            tryAgainButton.style.display = "block";
+        }
+
+        function hideTryAgain() {
+            tryAgainButton.style.display = "none";
+        }
+
+        function setSpeakingAnimation(value) {
+            if (window.assistant && typeof window.assistant.setSpeaking === "function") {
+                window.assistant.setSpeaking(value);
+            }
+        }
+
+        async function playAudioBlob(blob) {
+            return new Promise((resolve, reject) => {
+                const audioURL = URL.createObjectURL(blob);
+                const audio = new Audio(audioURL);
+
+                audio.onplay = () => {
+                    setSpeakingAnimation(true);
+                };
+
+                audio.onended = () => {
+                    setSpeakingAnimation(false);
+                    URL.revokeObjectURL(audioURL);
+                    resolve();
+                };
+
+                audio.onerror = () => {
+                    setSpeakingAnimation(false);
+                    URL.revokeObjectURL(audioURL);
+                    reject(new Error("Audio playback failed"));
+                };
+
+                audio.play().catch(reject);
+            });
+        }
+
+        async function playGreeting() {
+            updateStatus("Hello...");
+
+            const response = await fetch("/greeting");
+
+            if (!response.ok) {
+                throw new Error("Greeting request failed");
+            }
+
+            const greetingBlob = await response.blob();
+
+            await playAudioBlob(greetingBlob);
+
+            greetingPlayed = true;
+        }
+
+        async function startListening() {
+            try {
+                hideTryAgain();
+                isBusy = true;
+
+                updateStatus("Listening...");
+                micButton.disabled = true;
+                micButton.classList.add("recording");
+                micButton.textContent = "⏹️";
+
+                currentStream =
+                    await navigator.mediaDevices.getUserMedia({
+                        audio: true
+                    });
+
+                mediaRecorder = new MediaRecorder(currentStream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = function (event) {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = function () {
+                    sendVoiceQuestion();
+                };
+
+                mediaRecorder.start();
+
+                /*
+                 * Recording stops automatically after 7 seconds.
+                 * The user does not need to click Listening or Stop.
+                 */
+                setTimeout(() => {
+                    if (
+                        mediaRecorder &&
+                        mediaRecorder.state === "recording"
+                    ) {
+                        mediaRecorder.stop();
+                    }
+                }, 7000);
+
+            } catch (error) {
+                console.error(error);
+
+                updateStatus("Microphone permission denied");
+                showTryAgain();
+                resetMic();
+            }
+        }
+
+        async function sendVoiceQuestion() {
+            try {
+                updateStatus("Processing...");
+
+                const audioBlob = new Blob(audioChunks, {
+                    type: "audio/webm"
+                });
+
+                const formData = new FormData();
+
+                formData.append(
+                    "audio",
+                    audioBlob,
+                    "voice.webm"
+                );
+
+                const response = await fetch("/voice", {
+                    method: "POST",
+                    body: formData
+                });
+
+                if (!response.ok) {
+                    throw new Error("Voice request failed");
+                }
+
+                const data = await response.json();
+
+// Display the AI answer as text
+const caption = document.getElementById("answerCaption");
+if (caption) {
+    window.assistant.showAnswerWordByWord(data.answer);
+}
+
+updateStatus("SIA is speaking...");
+
+// Convert Base64 audio into a playable Blob
+const binaryString = atob(data.audio);
+const audioBytes = new Uint8Array(binaryString.length);
+
+for (let i = 0; i < binaryString.length; i++) {
+    audioBytes[i] = binaryString.charCodeAt(i);
+}
+
+const answerBlob = new Blob(
+    [audioBytes],
+    { type: "audio/wav" }
+);
+
+await playAudioBlob(answerBlob);
+
+                updateStatus("Speak now");
+                showTryAgain();
+
+            } catch (error) {
+                console.error(error);
+
+                updateStatus("I could not understand that");
+                showTryAgain();
+
+            } finally {
+                resetMic();
+            }
+        }
+
+        function resetMic() {
+            if (currentStream) {
+                currentStream.getTracks().forEach(track => {
+                    track.stop();
+                });
+            }
+
+            currentStream = null;
+            mediaRecorder = null;
+            audioChunks = [];
+
+            micButton.disabled = false;
+            micButton.classList.remove("recording");
+            micButton.textContent = "🎤";
+
+            isBusy = false;
+        }
+
+        async function handleMicClick() {
+            if (isBusy) {
+                return;
+            }
+
+            try {
+                hideTryAgain();
+
+                /*
+                 * Greeting plays only on the first click.
+                 * After greeting finishes, recording starts automatically.
+                 */
+                if (!greetingPlayed) {
+                    await playGreeting();
+                }
+
+                await startListening();
+
+            } catch (error) {
+                console.error(error);
+
+                updateStatus("Unable to start SIA");
+                showTryAgain();
+                resetMic();
+            }
+        }
+
+        micButton.addEventListener("click", async () => {
+    if (isBusy) return;
+
+    try {
+        isBusy = true;
+        hideTryAgain();
+
+        // Play greeting first
+        if (!greetingPlayed) {
+            await playGreeting();
+        }
+
+        // Start recording after greeting finishes
+        await startListening();
+
+    } catch (error) {
+        console.error("Voice error:", error);
+        updateStatus("Something went wrong. Please try again.");
+        showTryAgain();
+        isBusy = false;
+    }
+});
+
+// Try Again button
+tryAgainButton.addEventListener("click", async () => {
+    if (isBusy) return;
+
+    try {
+        hideTryAgain();
+        isBusy = true;
+        await startListening();
+    } catch (error) {
+        console.error("Try Again error:", error);
+        updateStatus("Could not understand. Please try again.");
+        showTryAgain();
+        isBusy = false;
+    }
+});
+        /*
+         * Initial state
+         */
+        updateStatus("Speak now");
+
+        // Automatically greet when arriving from the home page
+if (sessionStorage.getItem("playGreeting") === "true") {
+    sessionStorage.removeItem("playGreeting");
+
+    setTimeout(async () => {
+        try {
+            await playGreeting();
+            updateStatus("Speak now");
+        } catch (error) {
+            console.error("Automatic greeting failed:", error);
+            updateStatus("Tap the microphone to try again");
+            showTryAgain();
+        }
+    }, 500);
+}
+    </script>
+
+</body>
+</html>

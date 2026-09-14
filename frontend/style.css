@@ -17,7 +17,7 @@ body {
    font-family: 'Poppins', sans-serif;
     
     /* 1. Add your image path inside the quotes */
-   background-image: url('/static/BG.jpg');
+   background-image: url('/static/Background.png');
     
     /* 2. Ensure it covers the whole screen without repeating */
     background-size: cover;
@@ -158,11 +158,16 @@ body {
     border: 1px solid var(--glass-border);
     padding: 30px;
     border-radius: 30px;
-    border-top-left-radius: 5px; /* Points toward robot */
+    border-top-left-radius: 5px;
     max-width: 350px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    z-index: 5;
-    margin-bottom: 100px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+
+    position: absolute !important;
+    left: 48% !important;
+    top: 40% !important;
+
+    margin: 0 !important;
+    z-index: 10;
 }
 
 .speech-bubble h2 {

@@ -30,7 +30,7 @@ body {
     padding: 20px;
     
     /* 1. Add your background image link here */
-    background-image: url('/static/BG.jpg');
+    background-image: url('/static/Background.png');
     background-size: cover;
     background-position: center;
     background-color: var(--bg-color); /* Fallback color */
