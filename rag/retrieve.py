@@ -61,6 +61,64 @@ def retrieve(query, vector_store, documents, top_k=20):
     )
 
     query_lower = clean_query.lower()
+    # ==================================================
+    # 2. MULTILINGUAL PACS QUERY NORMALIZATION
+    # ==================================================
+
+    PACS_QUERY_MAP = {
+        # Hindi
+        "पैक्स क्या है": "What is PACS Primary Agricultural Credit Society cooperative society",
+        "पैक्स क्या सेवाएं प्रदान करता है": "What services does PACS Primary Agricultural Credit Society provide loans credit storage marketing CSC farmer services",
+        "मै पैक्स का सदस्य कैसे बन सकता हु": "How can I become a member of PACS Primary Agricultural Credit Society membership admission eligibility requirements",
+        "पैक्स में जुड़ने के लिए किस प्रकार के दस्तावेजों की जरुरत पड़ती है": "What documents are required to become a member of PACS Primary Agricultural Credit Society membership documents KYC identity residence land holding",
+        "पैक्स में जुड़ने के लिए हमारे पास क्या होना चाहिए": "What are the requirements to join PACS Primary Agricultural Credit Society membership documents KYC eligibility",
+        "पैक्स ऋण के लिए कौन पात्र है": "Who is eligible for PACS loans Primary Agricultural Credit Society agricultural rural borrowers members loan eligibility",
+
+        # Punjabi
+        "ਪੈਕਸ ਕੀ ਹੈ": "What is PACS Primary Agricultural Credit Society cooperative society",
+        
+        # Bengali
+        "প্যাক্স কী": "What is PACS Primary Agricultural Credit Society cooperative society",
+
+                # Government scheme list
+        "WHERE CAN I CHECK THE LIST OF ACTIVE SCHEME":
+            "Official PACS Related Schemes Ministry of Cooperation Government of India list of schemes",
+
+        # Tamil PMFBY definition
+        "PMBFY என்பது என்ன":
+            "What is PMFBY Pradhan Mantri Fasal Bima Yojana crop insurance scheme farmers",
+
+        # Crop insurance claim
+        "HOW CAN I CLAIM FOR CROP INSURANCE":
+            "How do I report crop loss and claim crop insurance under PMFBY Crop Insurance App KRPH 14447 loss intimation claim assessment",
+
+        # Marathi PMFBY application
+        "पीक विम्यसाठी मी कसा अर्ज करू":
+            "How can I apply for crop insurance under PMFBY farmer enrolment application NCIP Aadhaar mobile CSC bank",
+
+        # Kharif premium
+        "WHAT IS THE PREMIUM RATE OF KHARIF CROP":
+            "What is the farmer premium rate for Kharif crops under PMFBY Kharif crop insurance premium 2 percent of Sum Insured",
+
+        # Bengali crop damage reporting
+        "ক্ষতিগ্রস্ত ফসলের রিপোর্ট কীভাবে নথিভুক্ত করব":
+            "How to report crop damage under PMFBY crop loss intimation Crop Insurance App KRPH 14447 loss assessment",
+
+        # Crop-loss reporting time
+        "WITHIN HOW MANY HOURS CROP LOSS MUST BE":
+            "Within how many hours must crop loss be reported under PMFBY crop loss intimation 72 hours Crop Insurance App KRPH",
+
+        # Loan definition
+        "लोन (ऋण) क्या है और यह कैसे काम करता है":
+            "What is a loan and how does a loan work financial literacy borrowing repayment interest principal",
+
+        # Cooperative vs commercial bank
+        "ਇੱਕ ਵਪਾਰਕ ਬੈਂਕ ਅਤੇ ਸਹਿਕਾਰੀ ਬੈਂਕ ਵਿੱਚ ਕੀ ਫਰਕ ਹੈ":
+            "What is the difference between a commercial bank and a cooperative bank ownership membership services customers rural cooperative banking",
+    }
+
+    if clean_query in PACS_QUERY_MAP:
+        clean_query = PACS_QUERY_MAP[clean_query]
 
     # ==================================================
     # 2. IMPROVE PACS QUERIES
