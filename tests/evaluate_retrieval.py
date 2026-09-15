@@ -74,7 +74,7 @@ def main():
             item["question"],
             vector_store,
             documents,
-            top_k=3,
+            top_k=20,
         )
 
         if not retrieved:

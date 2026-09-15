@@ -35,7 +35,7 @@ def load_vector_store():
     return vector_store, documents
 
 
-def retrieve(query, vector_store, documents, top_k=3):
+def retrieve(query, vector_store, documents, top_k=20):
     """Retrieve the most relevant document chunks."""
 
     if vector_store is None or not documents:
@@ -284,7 +284,7 @@ def test_queries():
             query,
             vector_store,
             documents,
-            top_k=3
+            top_k=20
         )
 
         if not results:

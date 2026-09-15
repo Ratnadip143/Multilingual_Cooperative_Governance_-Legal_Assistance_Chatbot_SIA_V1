@@ -27,13 +27,15 @@
 
   /* timers (kept centrally so nothing accumulates/leaks) */
   const timers = {
-    blink: null,
-    look: null,
-    boredCheck: null,
-    boredMouth: null,
-    smile: null,
-    waveRAF: null
-  };
+  blink: null,
+  look: null,
+  boredCheck: null,
+  boredMouth: null,
+  smile: null,
+  waveRAF: null,
+  waveWander: null,
+  answerTyping: null
+};
 
   /* mouth drawing mode: "neutral" | "smile" | "speaking" */
   let mouthMode = "neutral";
@@ -415,22 +417,56 @@
 function showAnswerWordByWord(answer) {
   const caption = document.getElementById("answerCaption");
 
-  if (!caption) return;
+  if (!caption || !answer) return;
+
+  // Stop any previous answer animation
+  if (timers.answerTyping) {
+    clearTimeout(timers.answerTyping);
+    timers.answerTyping = null;
+  }
 
   caption.textContent = "";
+  caption.scrollTop = 0;
 
-  const words = answer.split(/\s+/);
-  let index = 0;
+  const words = String(answer).trim().split(/\s+/);
+  let wordIndex = 0;
 
-  const interval = setInterval(() => {
-    if (index >= words.length) {
-      clearInterval(interval);
+  function typeNextWord() {
+    if (wordIndex >= words.length) {
+      timers.answerTyping = null;
       return;
     }
 
-    caption.textContent += (index === 0 ? "" : " ") + words[index];
-    index++;
-  }, 120);
+    const word = words[wordIndex];
+    let letterIndex = 0;
+
+    // Add space before every word except the first
+    if (wordIndex > 0) {
+      caption.textContent += " ";
+    }
+
+    function typeNextLetter() {
+      if (letterIndex >= word.length) {
+        wordIndex++;
+
+        // Small pause after completing each word
+        timers.answerTyping = setTimeout(typeNextWord, 180);
+        return;
+      }
+
+      caption.textContent += word[letterIndex];
+      letterIndex++;
+
+      // Automatically scroll to the latest text
+      caption.scrollTop = caption.scrollHeight;
+
+      timers.answerTyping = setTimeout(typeNextLetter, 45);
+    }
+
+    typeNextLetter();
+  }
+
+  typeNextWord();
 }
 
   window.assistant = {
