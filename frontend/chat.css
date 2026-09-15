@@ -583,3 +583,20 @@ body {
 .bubble {
     white-space: normal;
 }
+
+/* Prevent long source names from overflowing chat bubbles */
+.bot-message,
+.message.bot,
+.message.assistant,
+.chat-message {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    white-space: pre-wrap;
+}
+
+/* Prevent horizontal overflow in the chat area */
+.chat-container,
+.chat-messages {
+    overflow-x: hidden;
+}

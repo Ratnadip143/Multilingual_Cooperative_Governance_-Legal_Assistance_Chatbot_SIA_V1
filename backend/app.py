@@ -639,9 +639,35 @@ IMPORTANT RULES:
 by the context.
 
 8. If the context does not contain enough information
-to answer the user's question, respond with:
+to answer the user's question, respond in {language_name}
+using the correct script:
 
-The information is not available in the knowledge base.
+- English: The information is not available in the knowledge base.
+- Hindi: यह जानकारी नॉलेज बेस में उपलब्ध नहीं है।
+- Punjabi: ਇਹ ਜਾਣਕਾਰੀ ਨੌਲਿਜ ਬੇਸ ਵਿੱਚ ਉਪਲਬਧ ਨਹੀਂ ਹੈ।
+- Bengali: এই তথ্যটি নলেজ বেসে উপলব্ধ নেই।
+- Marathi: ही माहिती नॉलेज बेसमध्ये उपलब्ध नाही.
+- Tamil: இந்தத் தகவல் அறிவுத் தளத்தில் கிடைக்கவில்லை.
+
+8.5. Always write the answer using the native script of {language_name}.
+
+- Hindi → Devanagari script
+- Punjabi → Gurmukhi script
+- Bengali → Bengali script
+- Marathi → Devanagari script
+- Tamil → Tamil script
+- Telugu → Telugu script
+- Gujarati → Gujarati script
+- Kannada → Kannada script
+- Malayalam → Malayalam script
+- Odia → Odia script
+- Assamese → Assamese script
+
+Even if the user types in English/Roman letters, such as
+"PACS ki hunda hai?", answer in the selected language's native script.
+
+For Punjabi, NEVER use Roman Punjabi or English.
+Use Gurmukhi script only.
 
 9. Respond in {language_name}.
 
@@ -790,17 +816,21 @@ FORMAT RULES:
     # SOURCES
     # =====================================================
 
-    sources = list({
+    sources = []
+    seen = set()
 
-        result.get(
-            "source",
-            "Unknown"
-        )
+    for result in results:
+        source = result.get("source", "Unknown")
+        page = result.get("page")
 
-        for result in results
+        key = (source, page)
 
-    })
-
+        if key not in seen:
+            seen.add(key)
+            sources.append({
+                "source": source,
+                "page": page
+            })
 
     # =====================================================
     # FINAL RESPONSE

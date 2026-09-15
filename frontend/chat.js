@@ -321,7 +321,17 @@ if (!response.ok) {
 
 const data = await response.json();
 
-appendBotMessage(data.answer);
+appendBotMessage(
+    data.answer +
+    "\n\n📚 Sources:\n" +
+    (
+        data.sources && data.sources.length
+            ? data.sources.map(source =>
+                `• ${typeof source === "string" ? source : source.source}`
+              ).join("\n")
+            : "• No sources available"
+    )
+);
     } catch (error) {
         console.error("Error:", error);
         appendBotMessage("Sorry, server error.");
