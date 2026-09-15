@@ -3,19 +3,20 @@ from pydantic import BaseModel
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pathlib import Path
+from fastapi import UploadFile, File, HTTPException
+from backend.voice.tts import text_to_speech
 
 import os
 import re
+import base64
+import traceback
 
 from dotenv import load_dotenv
 from sarvamai import SarvamAI
 
 from backend.language_detection import detect_language
 
-from rag.ingest import load_and_chunk_documents
-from rag.embeddings import create_embeddings
-from rag.vectorstore import create_vector_store
-from rag.retrieve import retrieve
+from rag.retrieve import retrieve, load_vector_store
 
 
 # =========================================================
@@ -63,13 +64,40 @@ app.mount(
     name="static"
 )
 
+@app.get("/greeting")
+def greeting():
+    audio_file = text_to_speech(
+        text="Hello! I am SIA, your Smart Indian Assistant. How can I help you today?",
+        language_code="en-IN",
+        output_file="greeting.wav"
+    )
+
+    return FileResponse(
+        audio_file,
+        media_type="audio/wav",
+        filename="greeting.wav"
+    )
 
 @app.get("/")
 def serve_frontend():
+    return FileResponse(
+        FRONTEND_DIR / "index.html"
+    )
 
+@app.get("/scheme-details.html")
+def serve_scheme_details():
+    return FileResponse(FRONTEND_DIR / "scheme-details.html")
+
+@app.get("/chat.html")
+def serve_chat():
     return FileResponse(
         FRONTEND_DIR / "chat.html"
     )
+
+
+@app.get("/mail.html")
+def serve_mail():
+    return FileResponse(FRONTEND_DIR / "mail.html")
 
 
 # =========================================================
@@ -82,52 +110,63 @@ class QuestionRequest(BaseModel):
 
     language: str = "English"
 
-
 # =========================================================
 # LOAD KNOWLEDGE BASE
 # =========================================================
 
 print("========================================")
-print("Loading knowledge base...")
+print("Loading FAISS knowledge base...")
 print("========================================")
 
+try:
+    vector_store, chunks = load_vector_store()
 
-chunks = load_and_chunk_documents()
+    print("FAISS knowledge base ready.")
+    print("Total vectors:", vector_store.ntotal)
+    print("Total chunks:", len(chunks))
 
-
-print(
-    "Total knowledge base chunks:",
-    len(chunks)
-)
-
-
-if chunks:
-
-    print("Creating embeddings...")
-
-    embeddings = create_embeddings(
-        [chunk["text"] for chunk in chunks]
-    )
-
-
-    print("Creating FAISS vector store...")
-
-    vector_store = create_vector_store(
-        embeddings
-    )
-
-
-    print("Knowledge base ready.")
-
-
-else:
-
+except Exception as e:
+    print("ERROR loading FAISS knowledge base:", e)
     vector_store = None
+    chunks = []
 
-    print(
-        "WARNING: Knowledge base is empty."
-    )
+def expand_query(question: str) -> str:
+    """
+    Adds context to short or acronym-based questions
+    before sending them to the knowledge-base retriever.
+    """
 
+    original = question.strip()
+    normalized = original.lower().strip(" ?.!")
+
+    short_query_map = {
+        "pacs": (
+            "What is PACS? Explain the full form, meaning, role, "
+            "functions, and importance of Primary Agricultural Credit Societies "
+            "in the cooperative sector."
+        ),
+        "what is pacs": (
+            "What is PACS? Explain the full form, meaning, role, "
+            "functions, and importance of Primary Agricultural Credit Societies "
+            "in the cooperative sector."
+        ),
+        "pacs full form": (
+            "What is the full form of PACS and what does Primary Agricultural "
+            "Credit Society mean?"
+        ),
+        "pacs meaning": (
+            "Explain the meaning and functions of Primary Agricultural Credit Societies."
+        )
+    }
+
+    if normalized in short_query_map:
+        return short_query_map[normalized]
+
+    # Add context to other very short questions
+    if len(original.split()) <= 2:
+        return f"Explain {original} in the context of Indian cooperatives and government schemes."
+
+    return original
 
 # =========================================================
 # HEALTH CHECK
@@ -388,7 +427,7 @@ def ask_question(
     # CREATE SEARCH QUERY
     # =====================================================
 
-    search_query = request.question
+    search_query = expand_query(request.question)
 
 
     if language_name != "English":
@@ -650,6 +689,16 @@ USER QUESTION:
 {request.question}
 
 Provide ONLY the final answer.
+
+FORMAT RULES:
+- When the answer contains multiple points, write one short introductory sentence on its own line first.
+- The introductory sentence must NOT be numbered.
+- Start numbering only the actual points, using 1., 2., 3., etc.
+- Answer in clear numbered points whenever listing information.
+- Use this format: 1. ..., 2. ..., 3. ...
+- Put each point on a separate line.
+- Do not combine multiple services or facts into one paragraph.
+- Keep the answer simple and easy to understand.
 """
 
 
@@ -771,3 +820,84 @@ Provide ONLY the final answer.
         "sources":
             sources
     }
+    # ==========================================
+# NOTIFICATION / UNREAD MESSAGE ENDPOINT
+# ==========================================
+
+@app.get("/api/messages")
+def get_messages():
+    return {
+    "unreadCount": 0,
+    "messages": []
+}
+    
+    
+    # =========================================================
+# VOICE ENDPOINT
+# =========================================================
+
+@app.post("/voice")
+async def voice_endpoint(
+    audio: UploadFile = File(...)
+):
+    try:
+        # Save uploaded audio
+        temp_audio = BASE_DIR / "temp_input.wav"
+
+        audio_data = await audio.read()
+
+        with open(temp_audio, "wb") as f:
+            f.write(audio_data)
+
+        # Speech to Text
+        with open(temp_audio, "rb") as audio_file:
+            stt_response = client.speech_to_text.transcribe(
+                file=audio_file,
+                model="saaras:v4"
+            )
+
+        transcript = stt_response.transcript
+
+        if not transcript:
+            raise HTTPException(
+                status_code=400,
+                detail="Could not understand audio."
+            )
+
+        # Existing RAG logic
+        result = ask_question(
+            QuestionRequest(question=transcript)
+        )
+        answer = result["answer"]
+
+        # Add greeting only for the first question
+        if not hasattr(app.state, "first_conversation_done"):
+            answer = (
+                "Hello! I am SIA, your Smart Indian Assistant. "
+                + answer
+            )
+            app.state.first_conversation_done = True
+
+        audio_file = text_to_speech(
+            text=answer,
+            output_file="response.wav"
+        )
+        with open("response.wav", "rb") as f:
+         audio_bytes = f.read()
+
+        audio_base64 = base64.b64encode(audio_bytes).decode("utf-8")
+
+        return {
+            "answer": answer,
+            "audio": audio_base64
+        }
+
+    except Exception as e:
+        print("\n========== VOICE ENDPOINT ERROR ==========")
+        traceback.print_exc()
+        print("==========================================\n")
+
+        raise HTTPException(
+            status_code=500,
+            detail=f"Voice processing failed: {str(e)}"
+        )

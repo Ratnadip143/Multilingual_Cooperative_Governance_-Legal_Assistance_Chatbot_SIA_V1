@@ -330,17 +330,30 @@ appendBotMessage(data.answer);
 
 function appendBotMessage(botText) {
     if (!chatHistory) return;
-    
+
+    const formattedText = botText
+    .trim()
+    .replace(/\n{2,}/g, '\n')
+    .replace(/\n/g, '<br>');
+
     const botHTML = `
         <div class="message-row bot">
-            <div class="avatar">🤖</div>
+            <div class="avatar sia-avatar">
+    <img src="/static/Chatbot.png" alt="SIA">
+</div>
             <div class="message-content">
-                <div class="bubble">${botText.replace(/\*/g, "")}</div>
+                <div class="bubble">${formattedText}</div>
                 <span class="time">${getCurrentTime()}</span>
             </div>
         </div>
     `;
     chatHistory.insertAdjacentHTML('beforeend', botHTML);
+    const avatar = chatHistory.lastElementChild.querySelector(".sia-avatar");
+avatar.classList.add("speaking");
+
+setTimeout(() => {
+    avatar.classList.remove("speaking");
+}, 1800);
     chatHistory.scrollTop = chatHistory.scrollHeight;
 }
 
@@ -400,3 +413,84 @@ window.addEventListener("offline", updateConnectionStatus);
 
 document.addEventListener("DOMContentLoaded", updateConnectionStatus);
 
+
+// ===============================
+// SIA Voice Recording
+// ===============================
+
+const micButton = document.getElementById("micButton");
+
+let mediaRecorder;
+let audioChunks = [];
+let isRecording = false;
+
+if (micButton) {
+    micButton.addEventListener("click", async () => {
+
+        if (!isRecording) {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: true
+                });
+
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                isRecording = true;
+
+                micButton.classList.add("recording");
+                micButton.innerHTML = '<i class="fa-solid fa-stop"></i>';
+
+                mediaRecorder.ondataavailable = (event) => {
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, {
+                        type: "audio/webm"
+                    });
+
+                    const formData = new FormData();
+                    formData.append("audio", audioBlob, "voice.webm");
+
+                    try {
+                        const response = await fetch("/voice", {
+                            method: "POST",
+                            body: formData
+                        });
+
+                        if (!response.ok) {
+                            throw new Error("Voice request failed");
+                        }
+
+                        const audioData = await response.blob();
+                        const audioURL = URL.createObjectURL(audioData);
+
+                        const audio = new Audio(audioURL);
+                        audio.play();
+
+                    } catch (error) {
+                        console.error("Voice error:", error);
+                        alert("Sorry, I could not understand your voice.");
+                    }
+
+                    stream.getTracks().forEach(track => track.stop());
+                };
+
+                mediaRecorder.start();
+
+            } catch (error) {
+                console.error("Microphone permission error:", error);
+                alert("Please allow microphone access.");
+            }
+
+        } else {
+            mediaRecorder.stop();
+            isRecording = false;
+
+            micButton.classList.remove("recording");
+            micButton.innerHTML = '<i class="fa-solid fa-microphone"></i>';
+        }
+    });
+}
