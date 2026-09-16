@@ -823,7 +823,7 @@ FORMAT RULES:
         source = result.get("source", "Unknown")
         page = result.get("page")
 
-        key = (source, page)
+        key = source
 
         if key not in seen:
             seen.add(key)
@@ -860,9 +860,47 @@ def get_messages():
     "unreadCount": 0,
     "messages": []
 }
-    
-    
-    # =========================================================
+def format_for_speech(text: str) -> str:
+    """
+    Creates a natural speech version without changing
+    the text displayed on the screen.
+    """
+
+    # Convert numbered points into natural spoken words
+    ordinal_words = {
+        "1": "First",
+        "2": "Second",
+        "3": "Third",
+        "4": "Fourth",
+        "5": "Fifth",
+        "6": "Sixth",
+        "7": "Seventh",
+        "8": "Eighth",
+        "9": "Ninth",
+        "10": "Tenth",
+    }
+
+    def replace_number(match):
+        number = match.group(1)
+        spoken_number = ordinal_words.get(number, f"Point {number}")
+        return f"\n{spoken_number}, "
+
+    # Convert formats such as:
+    # 1. Text
+    # 2) Text
+    text = re.sub(r"(?:^|\n)\s*(\d{1,2})[.)]\s*", replace_number, text)
+
+    # Remove bullet symbols
+    text = re.sub(r"(?:^|\n)\s*[-•*]\s*", "\n", text)
+
+    # Remove Markdown headings
+    text = re.sub(r"#+\s*", "", text)
+
+    # Remove excessive blank lines
+    text = re.sub(r"\n{2,}", "\n\n", text)
+
+    return text.strip()
+# =========================================================
 # VOICE ENDPOINT
 # =========================================================
 
@@ -908,8 +946,11 @@ async def voice_endpoint(
             )
             app.state.first_conversation_done = True
 
+            # Create a separate version only for speech
+        speech_answer = format_for_speech(answer)
+
         audio_file = text_to_speech(
-            text=answer,
+            text=speech_answer,
             output_file="response.wav"
         )
         with open("response.wav", "rb") as f:
