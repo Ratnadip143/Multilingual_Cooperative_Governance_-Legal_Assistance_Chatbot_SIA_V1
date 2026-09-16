@@ -166,10 +166,82 @@
         let currentStream = null;
         let isBusy = false;
         let greetingPlayed = false;
+        let wakeRecognition = null;
+        let wakeWordActive = false;
 
         function updateStatus(message) {
             statusText.textContent = message;
         }
+
+        function startWakeWordListener() {
+    const SpeechRecognition =
+        window.SpeechRecognition ||
+        window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) {
+        console.warn("Wake-word recognition is not supported.");
+        updateStatus("Tap the microphone to speak");
+        return;
+    }
+
+    wakeRecognition = new SpeechRecognition();
+
+    wakeRecognition.continuous = true;
+    wakeRecognition.interimResults = true;
+    wakeRecognition.lang = "en-IN";
+
+    wakeRecognition.onresult = async function (event) {
+        let transcript = "";
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+            transcript += event.results[i][0].transcript;
+        }
+
+        transcript = transcript.toLowerCase().trim();
+
+        console.log("Heard:", transcript);
+
+        if (
+            transcript.includes("hey sia") ||
+            transcript.includes("hey siya") ||
+            transcript.includes("hey s i a")
+        ) {
+            if (isBusy) {
+                return;
+            }
+
+            wakeWordActive = false;
+            wakeRecognition.stop();
+
+            updateStatus("Wake word detected");
+
+            await handleMicClick();
+        }
+    };
+
+    wakeRecognition.onerror = function (event) {
+        console.warn("Wake-word error:", event.error);
+    };
+
+    wakeRecognition.onend = function () {
+        if (wakeWordActive && !isBusy) {
+            try {
+                wakeRecognition.start();
+            } catch (error) {
+                console.warn("Wake-word restart failed:", error);
+            }
+        }
+    };
+
+    wakeWordActive = true;
+
+    try {
+        wakeRecognition.start();
+        updateStatus('Say "Hey SIA"');
+    } catch (error) {
+        console.warn("Could not start wake-word listener:", error);
+    }
+}
 
         function showTryAgain() {
             tryAgainButton.style.display = "block";
@@ -428,7 +500,8 @@ tryAgainButton.addEventListener("click", async () => {
         /*
          * Initial state
          */
-        updateStatus("Speak now");
+        updateStatus('Say "Hey SIA"');
+        startWakeWordListener();
 
         // Automatically greet when arriving from the home page
 if (sessionStorage.getItem("playGreeting") === "true") {

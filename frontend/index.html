@@ -270,6 +270,62 @@
     <!-- Main JavaScript -->
     <script src="/static/script.js"></script>
 
+<script>
+    // Wake-word listener for the home page
+    const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (SpeechRecognition) {
+        const wakeRecognition = new SpeechRecognition();
+
+        wakeRecognition.continuous = true;
+        wakeRecognition.interimResults = false;
+        wakeRecognition.lang = "en-IN";
+
+        wakeRecognition.onresult = function (event) {
+            const latestResult =
+                event.results[event.results.length - 1][0].transcript
+                    .toLowerCase()
+                    .trim();
+
+            console.log("Heard:", latestResult);
+
+            if (
+                latestResult.includes("hey sia") ||
+                latestResult.includes("hey see ya") ||
+                latestResult.includes("asia") ||
+                latestResult.includes("a sia")
+                 ) {
+                sessionStorage.setItem("playGreeting", "true");
+
+                window.location.href = "/static/face.html";
+            }
+        };
+
+        wakeRecognition.onerror = function (event) {
+            console.log("Wake-word error:", event.error);
+        };
+
+        wakeRecognition.onend = function () {
+            // Restart listening automatically
+            try {
+                wakeRecognition.start();
+            } catch (error) {
+                console.log("Wake-word restart:", error);
+            }
+        };
+
+        try {
+            wakeRecognition.start();
+            console.log("Say: Hey SIA");
+        } catch (error) {
+            console.log("Wake-word start error:", error);
+        }
+    } else {
+        console.warn("Speech recognition is not supported in this browser.");
+    }
+</script>
+
     <style>
     .main-content {
         position: relative !important;
