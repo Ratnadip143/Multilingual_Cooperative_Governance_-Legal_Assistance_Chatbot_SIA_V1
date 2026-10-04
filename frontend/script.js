@@ -132,6 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ========================================================
     // HOME PAGE MICROPHONE
     // ========================================================
+
     // This button only opens face.html.
     // Do not record audio here.
     // Audio recording is handled inside face.html.
@@ -175,10 +176,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 tapText.textContent = "Opening SIA...";
             }
 
-           setTimeout(() => {
-    sessionStorage.setItem("playGreeting", "true");
-    window.location.href = "/static/face.html";
-}, 300);
+            setTimeout(() => {
+                sessionStorage.setItem("playGreeting", "true");
+                window.location.href = "/static/face.html";
+            }, 300);
         });
     }
 
@@ -203,6 +204,7 @@ document.addEventListener("DOMContentLoaded", () => {
     dropdownItems.forEach((item) => {
 
         item.addEventListener("click", (event) => {
+
             event.stopPropagation();
 
             const languageCode =
@@ -302,9 +304,12 @@ document.addEventListener("DOMContentLoaded", () => {
         count = Number(count) || 0;
 
         if (count > 0) {
+
             messageBadge.textContent = count;
             messageBadge.style.display = "flex";
+
         } else {
+
             messageBadge.textContent = "";
             messageBadge.style.display = "none";
         }
@@ -317,9 +322,11 @@ document.addEventListener("DOMContentLoaded", () => {
     async function fetchInboxData() {
 
         try {
+
             const response = await fetch("/api/messages");
 
             if (!response.ok) {
+
                 throw new Error(
                     `Notification API returned ${response.status}`
                 );
@@ -330,6 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
             updateNotificationBadge(data.unreadCount);
 
         } catch (error) {
+
             console.log(
                 "Notification service is not available yet."
             );
@@ -337,6 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     updateNotificationBadge(0);
+
     fetchInboxData();
 
     setInterval(() => {
@@ -366,6 +375,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }, 700);
 
             } else {
+
                 window.location.href = "/static/mail.html";
             }
         });
@@ -394,6 +404,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }, 700);
 
             } else {
+
                 window.location.href = "/static/chat.html";
             }
         });
@@ -401,30 +412,82 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ========================================================
     // CONNECTION STATUS
+    // Uses the original browser navigator.onLine logic
     // ========================================================
 
     function updateConnectionStatus() {
 
-        const status =
+        const isOnline = navigator.onLine;
+
+        // --------------------------------------------
+        // HEADER STATUS
+        // --------------------------------------------
+
+        const headerStatus =
             document.getElementById("connection-status");
 
-        if (!status) return;
+        if (headerStatus) {
 
-        status.textContent =
-            navigator.onLine ? "📶" : "📵";
+            if (isOnline) {
+
+                headerStatus.innerHTML = `
+                    <span class="online-dot"></span>
+                    <span>Online</span>
+                `;
+
+                headerStatus.classList.remove("offline");
+                headerStatus.classList.add("online");
+
+            } else {
+
+                headerStatus.innerHTML = `
+                    <span class="online-dot offline-dot"></span>
+                    <span>Offline</span>
+                `;
+
+                headerStatus.classList.remove("online");
+                headerStatus.classList.add("offline");
+            }
+        }
+
+        // --------------------------------------------
+        // SIA ASSISTANT CARD STATUS
+        // --------------------------------------------
+
+        const assistantStatus =
+            document.getElementById("assistant-connection-status");
+
+        if (assistantStatus) {
+
+            if (isOnline) {
+
+                assistantStatus.innerHTML = `
+                    <span class="online-dot"></span>
+                    <span>Online</span>
+                `;
+
+                assistantStatus.classList.remove("offline");
+                assistantStatus.classList.add("online");
+
+            } else {
+
+                assistantStatus.innerHTML = `
+                    <span class="online-dot offline-dot"></span>
+                    <span>Offline</span>
+                `;
+
+                assistantStatus.classList.remove("online");
+                assistantStatus.classList.add("offline");
+            }
+        }
     }
 
+    // Run immediately when the page loads
     updateConnectionStatus();
 
-    window.addEventListener(
-        "online",
-        updateConnectionStatus
-    );
-
-    window.addEventListener(
-        "offline",
-        updateConnectionStatus
-    );
+    // Browser Internet connection events
+    window.addEventListener("online", updateConnectionStatus);
+    window.addEventListener("offline", updateConnectionStatus);
 
     // ========================================================
     // DATE AND TIME
@@ -441,6 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("current-time");
 
         if (dateElement) {
+
             dateElement.textContent =
                 now.toLocaleDateString("en-IN", {
                     weekday: "short",
@@ -451,6 +515,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (timeElement) {
+
             timeElement.textContent =
                 now.toLocaleTimeString("en-IN", {
                     hour: "2-digit",
@@ -468,6 +533,7 @@ document.addEventListener("DOMContentLoaded", () => {
     function updateInitialMessageTime() {
 
         if (initialTime) {
+
             initialTime.textContent =
                 new Date().toLocaleTimeString("en-IN", {
                     hour: "2-digit",
@@ -480,7 +546,9 @@ document.addEventListener("DOMContentLoaded", () => {
     updateInitialMessageTime();
 
     setInterval(() => {
+
         updateDateTime();
         updateInitialMessageTime();
+
     }, 1000);
 });
